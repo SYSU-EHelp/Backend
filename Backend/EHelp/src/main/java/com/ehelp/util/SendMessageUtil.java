@@ -13,7 +13,7 @@ public class SendMessageUtil {
 	
 	private final static String url = "http://gw.api.taobao.com/router/rest";
 	private final static String appkey = "23773560";
-	private final static String secret = "72271da5a79b24c4922f90cc2deb82ea";
+	private final static String secret = "";
 	
 	public static String send(String phone, String code) throws ApiException {
 		TaobaoClient client = new DefaultTaobaoClient(url, appkey, secret);
@@ -49,11 +49,7 @@ public class SendMessageUtil {
 	
 	public static void main(String[] args) throws ApiException {
 		System.out.println(send("18819253762", "8989"));
-		
-
 	}
 	
 }
-
-
 

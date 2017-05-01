@@ -1,34 +1,42 @@
 package com.ehelp.entity;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+/*
+ * 用户类
+ */
+@Entity
+@Table(name="user")
 public class User {
 
-	private int id;
-	private String phone;
-	private String username;
-	private String password;
+	private int id; //用户id
+	private String username; // 用户名
+	private String password; // 密码
+	private String phone; // 手机号
+	private String avatar; // 头像
+	private double longitude; // 用户定位经度
+	private double latitude; // 用户定位纬度
 
 	public User() {
 	}
 
-	public User(String username, String password) {
-		this.phone = null;
+	public User(String username, String password, String phone, String avatar, double longitude, double latitude) {
 		this.username = username;
 		this.password = password;
-	}
-
-	public User(String phone, String username, String password) {
 		this.phone = phone;
-		this.username = username;
-		this.password = password;
+		this.avatar = avatar;
+		this.longitude = longitude;
+		this.latitude = latitude;
 	}
 
+	@Id
+	@Column(name="id", nullable = false)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	public int getId() {
 		return id;
 	}
@@ -37,14 +45,7 @@ public class User {
 		this.id = id;
 	}
 
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
+	@Column(name="username", unique = true, nullable = false, length = 45)
 	public String getUsername() {
 		return username;
 	}
@@ -53,6 +54,7 @@ public class User {
 		this.username = username;
 	}
 
+	@Column(name="password", nullable = false, length = 45)
 	public String getPassword() {
 		return password;
 	}
@@ -61,9 +63,46 @@ public class User {
 		this.password = password;
 	}
 
+	@Column(name="phone", unique = true, nullable = false, length = 15)
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	@Column(name="avatar", length = 45)
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
+	@Column(name="longitude")
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	@Column(name="latitude")
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", phone=" + phone + ", username=" + username + ", password=" + password + "]";
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", phone=" + phone + ", avatar="
+				+ avatar + ", longitude=" + longitude + ", latitude=" + latitude + "]";
 	}
 
 }
