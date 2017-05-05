@@ -8,9 +8,6 @@ import org.hibernate.service.ServiceRegistryBuilder;
 
 public class DBSessionUtil {
 	
-	private static SessionFactory sessionFactory;
-	private static Session session;
-
 	public static Session getSession() {
 		// 获得配置对象
 		Configuration config = new Configuration().configure();
@@ -18,14 +15,14 @@ public class DBSessionUtil {
 		ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(config.getProperties())
 				.buildServiceRegistry();
 		// 获得sessionFactory对象
-		sessionFactory = config.buildSessionFactory(serviceRegistry);
+		SessionFactory sessionFactory = config.buildSessionFactory(serviceRegistry);
 		// 获得session对象
-		session = sessionFactory.openSession();
+		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		return session;
 	}
 
-	public static void closeSession() {
+	public static void closeSession(Session session) {
 		session.getTransaction().commit();
 		session.close();
 	}

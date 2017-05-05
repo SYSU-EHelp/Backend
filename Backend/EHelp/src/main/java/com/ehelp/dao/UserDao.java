@@ -24,7 +24,7 @@ public class UserDao {
 		// 查询结果
 		User u = (User) query.uniqueResult();
 		// 事务提交并关闭
-		DBSessionUtil.closeSession();
+		DBSessionUtil.closeSession(session);
 		if (u == null) {
 			return true;
 		}
@@ -42,7 +42,7 @@ public class UserDao {
 		// 查询结果
 		User u = (User) query.uniqueResult();
 		// 事务提交并关闭
-		DBSessionUtil.closeSession();
+		DBSessionUtil.closeSession(session);
 		if (u == null) {
 			return false;
 		}
@@ -53,7 +53,7 @@ public class UserDao {
 	public boolean addUser(String username, String password, String phone, String avatar, double longitude, double latitude) {
 		Session session = DBSessionUtil.getSession();
 		session.save(new User(username, password, phone, avatar, longitude, latitude));
-		DBSessionUtil.closeSession();
+		DBSessionUtil.closeSession(session);
 		return true;
 	}
 
