@@ -13,16 +13,31 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="15dp"/>
 
-    <EditText
-        android:id="@+id/verified"
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:hint="短信验证码"
-        android:textSize="@dimen/textSize"
-        android:layout_marginRight="20dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="15dp">
-    </EditText>
+        <EditText
+            android:id="@+id/verified"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:hint="短信验证码"
+            android:layout_marginRight="30dp"
+            android:textSize="@dimen/textSize"
+           >
+        </EditText>
+        <TextView
+            android:id="@+id/send_verified"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="获取验证码"
+            android:textColor="#1abc9c"/>
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/next"

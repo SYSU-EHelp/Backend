@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this,HomeActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("name", username.getText().toString());
+                    bundle.putString("password", password.getText().toString());
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
