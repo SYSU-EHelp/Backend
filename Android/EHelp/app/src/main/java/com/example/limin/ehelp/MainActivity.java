@@ -1,8 +1,6 @@
 package com.example.limin.ehelp;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -32,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (TextUtils.isEmpty(password.getText().toString())) {
                     Toast.makeText(MainActivity.this, "密码不能为空", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = new Intent(MainActivity.this,Home.class);
+                    Intent intent = new Intent(MainActivity.this,HomeActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("name", username.getText().toString());
                     intent.putExtras(bundle);

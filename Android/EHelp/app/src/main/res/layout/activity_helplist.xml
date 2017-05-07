@@ -2,14 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <TextView
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:text="欢迎来到易助!"
-        android:layout_marginTop="30dp"
-        android:textSize="@dimen/textSize"
-        android:layout_marginRight="20dp"
-        android:textColor="#1abc9c"/>
+        android:layout_height="wrap_content"
+        android:text="这里是求助社区的内容"/>
 
 </LinearLayout>
