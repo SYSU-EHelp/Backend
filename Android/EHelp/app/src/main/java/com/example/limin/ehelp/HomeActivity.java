@@ -1,11 +1,20 @@
 package com.example.limin.ehelp;
 
+import android.app.Dialog;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Adapter;
+import android.widget.Toast;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
@@ -17,6 +26,7 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 public class HomeActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
+    private FloatingActionButton createBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +47,35 @@ public class HomeActivity extends AppCompatActivity {
         SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
         viewPagerTab.setViewPager(viewPager);
 
+        createBtn = (FloatingActionButton) findViewById(R.id.fab);
+        createBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog();
+            }
+        });
+
     }
+
+    private void showDialog() {
+        PopUpDialog popDialog = new PopUpDialog(this, onClickListener);
+        //showAtLocation(View parent, int gravity, int x, int y)
+        popDialog.showAtLocation(findViewById(R.id.layout_home), Gravity.CENTER, 0, 0);
+    }
+
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_createhelp:
+                    Toast.makeText(HomeActivity.this, "发求助", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.btn_createquestion:
+                    Toast.makeText(HomeActivity.this, "发提问", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -5,4 +5,5 @@
     <color name="colorAccent">#1abc9c</color>
     <color name = "buttonBackgroud">#1abc9c</color>
     <color name = "buttonText">#FFFFFF</color>
+    <color name="mGray">#888888</color>
 </resources>
