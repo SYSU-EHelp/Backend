@@ -81,6 +81,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -93,6 +94,9 @@ public class HomeActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id ==R.id.action_userinfo) {
+            /*Intent i=new Intent(this,Information.class) ;
+            startActivity(i);*/
+            //这里的跳转有问题,未解决!!!
             return true;
         }
 
@@ -101,6 +105,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         if (id ==R.id.action_logout) {
+            finish();
             return true;
         }
 
