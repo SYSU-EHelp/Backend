@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <include layout="@layout/layout_titlebar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+        <EditText
+            android:id="@+id/et_helptitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="求助标题"
+            android:maxLines="1"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:textSize="@dimen/mainTextSize" />
+
+        <TextView
+            android:id="@+id/tv_wordcount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0/20"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/mLightGray"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"/>
+
+    <EditText
+        android:id="@+id/et_helpcontent"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="@null"
+        android:gravity="start"
+        android:hint="求助描述"
+        android:padding="15dp"
+        android:scrollbars="vertical"
+        android:textSize="@dimen/mainTextSize" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/mLightGray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+        <EditText
+            android:id="@+id/et_helplocation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="求助地点"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:textSize="@dimen/mainTextSize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="使用定位"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/mainTextSize" />
+    </LinearLayout>
+
+</LinearLayout>

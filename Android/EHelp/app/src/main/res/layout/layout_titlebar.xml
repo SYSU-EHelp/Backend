@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/titleBarHeight"
+    android:background="@color/colorPrimary"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:background="@mipmap/back"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:text="易助"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/tv_nextope"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="完成"
+        android:textSize="18sp"
+        android:textColor="@color/colorAccent"
+        android:layout_alignBaseline="@+id/btn_back"
+        android:layout_alignBottom="@+id/btn_back"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

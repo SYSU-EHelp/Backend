@@ -1,6 +1,7 @@
 package com.example.limin.ehelp;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
@@ -9,11 +10,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Adapter;
 import android.widget.Toast;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
@@ -27,6 +23,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private FloatingActionButton createBtn;
+    private PopUpDialog popDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void showDialog() {
-        PopUpDialog popDialog = new PopUpDialog(this, onClickListener);
+        popDialog = new PopUpDialog(this, onClickListener);
         //showAtLocation(View parent, int gravity, int x, int y)
         popDialog.showAtLocation(findViewById(R.id.layout_home), Gravity.CENTER, 0, 0);
     }
@@ -68,7 +65,10 @@ public class HomeActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btn_createhelp:
-                    Toast.makeText(HomeActivity.this, "发求助", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(HomeActivity.this, "发求助", Toast.LENGTH_SHORT).show();
+                    popDialog.dismiss();
+                    Intent intent = new Intent(HomeActivity.this, EditHelpActivity.class);
+                    startActivity(intent);
                     break;
                 case R.id.btn_createquestion:
                     Toast.makeText(HomeActivity.this, "发提问", Toast.LENGTH_SHORT).show();

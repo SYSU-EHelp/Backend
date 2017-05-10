@@ -12,4 +12,6 @@
     <dimen name="radius">10dp</dimen>
     <dimen name="padding_lr">10dp</dimen>
     <dimen name="padding_tb">5dp</dimen>
+    <dimen name="mainTextSize">15sp</dimen>
+    <dimen name="titleBarHeight">48dp</dimen>
 </resources>
