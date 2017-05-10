@@ -13,18 +13,18 @@ public class UserService {
 	private UserDao userDao;
 	
 	public Boolean addUser(String phone, String username, String password) {
-		if (checkUser(phone)) {
-			userDao.addUser(phone, username, password);
+		if (phoneExisted(phone)) {
+			userDao.addUser(username, password, phone, "", "");
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean checkUser(String phone) {
-		return userDao.checkUser(phone);
+	public boolean phoneExisted(String phone) {
+		return userDao.phoneExisted(phone);
 	}
 	
-	public boolean checkUser2(User user) {
-		return userDao.checkUser2(user);
+	public boolean checkUser(User user) {
+		return userDao.checkUser(user);
 	}
 }

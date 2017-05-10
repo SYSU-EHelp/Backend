@@ -13,7 +13,7 @@ public class SendMessageUtil {
 	
 	private final static String url = "http://gw.api.taobao.com/router/rest";
 	private final static String appkey = "23773560";
-	private final static String secret = "";
+	private final static String secret = "72271da5a79b24c4922f90cc2deb82ea";
 	
 	public static String send(String phone, String code) throws ApiException {
 		TaobaoClient client = new DefaultTaobaoClient(url, appkey, secret);

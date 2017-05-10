@@ -11,32 +11,35 @@ import javax.persistence.Table;
  * 用户类
  */
 @Entity
-@Table(name="user")
+@Table(name = "user")
 public class User {
 
-	private int id; //用户id
+	private int id; // 用户id
 	private String username; // 用户名
 	private String password; // 密码
 	private String phone; // 手机号
 	private String avatar; // 头像
-	private double longitude; // 用户定位经度
-	private double latitude; // 用户定位纬度
+	private String address; // 地址
 
 	public User() {
 	}
 
-	public User(String username, String password, String phone, String avatar, double longitude, double latitude) {
+	public User(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
+	
+	public User(String username, String password, String phone, String avatar, String address) {
 		this.username = username;
 		this.password = password;
 		this.phone = phone;
 		this.avatar = avatar;
-		this.longitude = longitude;
-		this.latitude = latitude;
+		this.address = address;
 	}
 
 	@Id
-	@Column(name="id", nullable = false)
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	public int getId() {
 		return id;
 	}
@@ -45,7 +48,7 @@ public class User {
 		this.id = id;
 	}
 
-	@Column(name="username", unique = true, nullable = false, length = 45)
+	@Column(name = "username", unique = true, nullable = false, length = 45)
 	public String getUsername() {
 		return username;
 	}
@@ -54,7 +57,7 @@ public class User {
 		this.username = username;
 	}
 
-	@Column(name="password", nullable = false, length = 45)
+	@Column(name = "password", nullable = false, length = 45)
 	public String getPassword() {
 		return password;
 	}
@@ -63,7 +66,7 @@ public class User {
 		this.password = password;
 	}
 
-	@Column(name="phone", unique = true, nullable = false, length = 15)
+	@Column(name = "phone", unique = true, nullable = false, length = 15)
 	public String getPhone() {
 		return phone;
 	}
@@ -72,7 +75,7 @@ public class User {
 		this.phone = phone;
 	}
 
-	@Column(name="avatar", length = 45)
+	@Column(name = "avatar", length = 45)
 	public String getAvatar() {
 		return avatar;
 	}
@@ -81,28 +84,19 @@ public class User {
 		this.avatar = avatar;
 	}
 
-	@Column(name="longitude")
-	public double getLongitude() {
-		return longitude;
+	@Column(name = "address", length = 200)
+	public String getAddress() {
+		return address;
 	}
 
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
-	}
-
-	@Column(name="latitude")
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", phone=" + phone + ", avatar="
-				+ avatar + ", longitude=" + longitude + ", latitude=" + latitude + "]";
+				+ avatar + ", address=" + address + "]";
 	}
 
 }

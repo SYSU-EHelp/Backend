@@ -15,7 +15,7 @@ import com.ehelp.util.DBSessionUtil;
 public class UserDao {
 
 	// 用以注册时检查该手机号是否已被注册
-	public boolean checkUser(String phone) {
+	public boolean phoneExisted(String phone) {
 		Session session = DBSessionUtil.getSession();
 		// 查询语句
 		Query query = session.createQuery(" from User u where u.phone=:phone");
@@ -26,13 +26,21 @@ public class UserDao {
 		// 事务提交并关闭
 		DBSessionUtil.closeSession(session);
 		if (u == null) {
-			return true;
+			return false;
 		}
-		return false;
+		return true;
+	}
+	
+	// 注册添加用户
+	public boolean addUser(String username, String password, String phone, String avatar, String address) {
+		Session session = DBSessionUtil.getSession();
+		session.save(new User(username, password, phone, avatar, address));
+		DBSessionUtil.closeSession(session);
+		return true;
 	}
 
 	// 用以登录时检查数据库中是否存在该用户
-	public boolean checkUser2(User user) {
+	public boolean checkUser(User user) {
 		Session session = DBSessionUtil.getSession();
 		// 查询语句
 		Query query = session.createQuery(" from User u where u.username=:username and u.password=:password");
@@ -49,19 +57,11 @@ public class UserDao {
 		return true;
 	}
 
-	// 添加用户
-	public boolean addUser(String username, String password, String phone, String avatar, double longitude, double latitude) {
-		Session session = DBSessionUtil.getSession();
-		session.save(new User(username, password, phone, avatar, longitude, latitude));
-		DBSessionUtil.closeSession(session);
-		return true;
-	}
-
 	public static void main(String[] args) {
 		UserDao dao = new UserDao();
-		System.out.println(dao.checkUser("1881925"));
-		dao.addUser("Gordan", "123456", "1881925", "avatar", 12, 12);
-		System.out.println(dao.checkUser("1881925"));
+		System.out.println(dao.phoneExisted("1881925"));
+		dao.addUser("Gordan", "123456", "1881925", "avatar", "");
+		System.out.println(dao.phoneExisted("1881925"));
 	}
 
 }

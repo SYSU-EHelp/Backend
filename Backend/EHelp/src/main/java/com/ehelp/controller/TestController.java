@@ -43,7 +43,7 @@ public class TestController {
 	public Map<String, Object> getCode(@RequestParam(value="phone")String phone, HttpServletRequest request, HttpServletResponse response,
 			HttpSession session) throws ApiException {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if (!userService.checkUser(phone)) {
+		if (!userService.phoneExisted(phone)) {
 			map.put("status", 500);
 			map.put("errmsg", "用户已存在");
 			System.out.println("用户已存在");
@@ -103,7 +103,7 @@ public class TestController {
 			HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = new User(username, password);
-		if (userService.checkUser2(user)) {
+		if (userService.checkUser(user)) {
 			map.put("status", 200);
 			System.out.println("------登录成功------");
 		}
