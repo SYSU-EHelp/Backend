@@ -40,7 +40,7 @@ public class UserDao {
 	}
 
 	// 用以登录时检查数据库中是否存在该用户
-	public boolean checkUser(User user) {
+	public int checkUser(User user) {
 		Session session = DBSessionUtil.getSession();
 		// 查询语句
 		Query query = session.createQuery(" from User u where u.username=:username and u.password=:password");
@@ -52,9 +52,9 @@ public class UserDao {
 		// 事务提交并关闭
 		DBSessionUtil.closeSession(session);
 		if (u == null) {
-			return false;
+			return -1;
 		}
-		return true;
+		return u.getId();
 	}
 
 	public static void main(String[] args) {

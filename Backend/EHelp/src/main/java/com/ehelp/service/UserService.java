@@ -13,7 +13,7 @@ public class UserService {
 	private UserDao userDao;
 	
 	public Boolean addUser(String phone, String username, String password) {
-		if (phoneExisted(phone)) {
+		if (!phoneExisted(phone)) {
 			userDao.addUser(username, password, phone, "", "");
 			return true;
 		}
@@ -24,7 +24,7 @@ public class UserService {
 		return userDao.phoneExisted(phone);
 	}
 	
-	public boolean checkUser(User user) {
+	public int checkUser(User user) {
 		return userDao.checkUser(user);
 	}
 }

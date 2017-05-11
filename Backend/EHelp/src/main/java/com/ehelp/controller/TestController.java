@@ -22,6 +22,7 @@ import com.ehelp.util.SendMessageUtil;
 import com.taobao.api.ApiException;
 
 @Controller
+@RequestMapping("/users")
 public class TestController {
 
 	private String CODE = null;
@@ -43,10 +44,10 @@ public class TestController {
 	public Map<String, Object> getCode(@RequestParam(value="phone")String phone, HttpServletRequest request, HttpServletResponse response,
 			HttpSession session) throws ApiException {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if (!userService.phoneExisted(phone)) {
+		if (userService.phoneExisted(phone)) {
 			map.put("status", 500);
-			map.put("errmsg", "用户已存在");
-			System.out.println("用户已存在");
+			map.put("errmsg", "该手机已被注册");
+			System.out.println("该手机已被注册");
 			return map;
 		}
 		//随机生成4位验证码
@@ -68,6 +69,7 @@ public class TestController {
 //        session.setAttribute("code", code);
 //        System.out.println("session: " + session.getAttribute("code"));
         map.put("status", 200);
+        map.put("code", CODE);
 		return map;
 	}
 	
@@ -103,8 +105,10 @@ public class TestController {
 			HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		User user = new User(username, password);
-		if (userService.checkUser(user)) {
+		int id = userService.checkUser(user);
+		if (id != -1) {
 			map.put("status", 200);
+			map.put("id", id);
 			System.out.println("------登录成功------");
 		}
 		else {
