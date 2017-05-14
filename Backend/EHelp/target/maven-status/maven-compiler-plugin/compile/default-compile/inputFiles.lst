@@ -1,5 +1,14 @@
 /Users/gd/workspace/EHelp/src/main/java/com/ehelp/dao/UserDao.java
-/Users/gd/workspace/EHelp/src/main/java/com/ehelp/controller/TestController.java
+/Users/gd/workspace/EHelp/src/main/java/com/ehelp/service/UserServiceImpl.java
+/Users/gd/workspace/EHelp/src/main/java/com/ehelp/entity/Help.java
+/Users/gd/workspace/EHelp/src/main/java/com/ehelp/entity/Contact.java
+/Users/gd/workspace/EHelp/src/main/java/com/ehelp/controller/UserController.java
+/Users/gd/workspace/EHelp/src/main/java/com/ehelp/dao/UserDaoImpl.java
+/Users/gd/workspace/EHelp/src/main/java/com/ehelp/entity/Question.java
+/Users/gd/workspace/EHelp/src/main/java/com/ehelp/util/DBSessionUtil.java
 /Users/gd/workspace/EHelp/src/main/java/com/ehelp/entity/User.java
 /Users/gd/workspace/EHelp/src/main/java/com/ehelp/util/SendMessageUtil.java
 /Users/gd/workspace/EHelp/src/main/java/com/ehelp/service/UserService.java
+/Users/gd/workspace/EHelp/src/main/java/com/ehelp/entity/Answer.java
+/Users/gd/workspace/EHelp/src/main/java/com/ehelp/entity/Emergency.java
+/Users/gd/workspace/EHelp/src/main/java/com/ehelp/entity/Response.java
