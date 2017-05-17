@@ -7,7 +7,7 @@
     	<property name="connection.username">root</property>
     	<property name="connection.password">8815517</property>
     	<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-    	<property name="connection.url">jdbc:mysql:///EHelp?useUnicode=true&amp;characterEncoding=UTF-8</property>
+    	<property name="connection.url">jdbc:mysql://119.29.246.121:3306/EHelp?useUnicode=true&amp;characterEncoding=UTF-8</property>
     	<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
     	
     	<property name="show_sql">true</property>
