@@ -36,7 +36,8 @@ public class QuestionDaoImpl implements QuestionDao {
 		Session session = DBSessionUtil.getSession();
 		// 查询语句
 		Query query = session.createQuery("select new com.ehelp.entity.QuestionResult(u.username, u.avatar, a.description, a.date) "
-				+ "from Question q, Answer a, User u where q.id=a.question_id and a.answerer_id=u.id");
+				+ "from Question q, Answer a, User u where q.id=a.question_id and a.answerer_id=u.id and q.id=:id");
+		query.setParameter("id", id);
 		// 查询结果
 		results = query.list();
 		// 事务提交并关闭

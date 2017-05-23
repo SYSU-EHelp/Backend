@@ -6,12 +6,18 @@ import com.ehelp.entity.Contact;
 import com.ehelp.entity.User;
 
 public interface UserDao {
+	
+	//根据id获取名字
+	public String getName(int id);
 
-	// 用以注册时检查该手机号是否已被注册
-	public boolean phoneExisted(String phone);
+	//添加验证码
+	public boolean addCode(String phone, String code);
+	
+	// 用以注册时检查该手机号是否已被使用
+	public boolean phoneExisted(String phone, String code);
 	
 	// 注册添加用户
-	public boolean addUser(String username, String password, String phone, String avatar);
+	public int addUser(String username, String password, String phone, String avatar, String code);
 	
 	// 用以登录时检查数据库中是否存在该用户
 	public int checkUser(User user);

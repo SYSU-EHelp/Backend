@@ -1,5 +1,6 @@
 package com.ehelp.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,6 +30,8 @@ import com.taobao.api.ApiException;
 @RequestMapping("/users")
 public class UserController {
 	
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	
 	@Autowired
 	private UserServiceImpl userService;
 	
@@ -48,38 +51,47 @@ public class UserController {
 	 */
 	@RequestMapping(value="/sendCode", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> getCode(@RequestParam(value="phone")String phone, HttpSession session) throws ApiException {
+	public Map<String, Object> getCode(@RequestParam(value="phone")String phone, HttpSession session)  {
 		//随机生成4位验证码
         String code = "";
         Random r = new Random(new Date().getTime());
         for (int i = 0; i < 4; i++) {
         	code = code+r.nextInt(10);
         }
-        session.setAttribute("code", code);
         
         Map<String, Object> map = new HashMap<String, Object>();
         Map<String, Object> data = new HashMap<String, Object>();
-		if (userService.phoneExisted(phone)) {
+        try {
+			if (userService.phoneExisted(phone, code)) {
+				map.put("status", 500);
+				map.put("data", data);
+				map.put("errmsg", "该手机已被注册");
+				System.out.println("该手机已被注册");
+				return map;
+			}
+
+			//发送验证码
+	        String result = SendMessageUtil.send(phone, code);
+	        if (!result.equals("success")) {
+	        	map.put("status", 500);
+	        	map.put("data", data);
+				map.put("errmsg", "短信发送失败");
+				System.out.println("短信发送失败");
+				return map;
+	        }
+	        if (userService.addCode(phone, code)) {
+	        	System.out.println("验证码添加成功");
+	        	map.put("status", 200);
+	        	data.put("code", code);
+	        	map.put("data", data);
+	        }
+	        return map;
+		} catch (Exception e) {
 			map.put("status", 500);
 			map.put("data", data);
-			map.put("errmsg", "该手机已被注册");
-			System.out.println("该手机已被注册");
-			return map;
+			map.put("errmsg", "请求失败，请重试");
 		}
-		
-		//发送验证码
-        String result = SendMessageUtil.send(phone, code);
-        if (!result.equals("success")) {
-        	map.put("status", 500);
-        	map.put("data", data);
-			map.put("errmsg", "短信发送失败");
-			System.out.println("短信发送失败");
-			return map;
-        }
-        map.put("status", 200);
-        data.put("code", code);
-        map.put("data", data);
-		return map;
+        return map;
 	}
 	
 	/*
@@ -90,33 +102,51 @@ public class UserController {
 	public Map<String, Object> register(@RequestParam(value="code")String code, @RequestParam(value="phone")String phone,
 			@RequestParam(value="username")String username, @RequestParam(value="password")String password,
 			HttpSession session) {
-		String CODE = null;
-		if (session.getAttribute("code") != null) 
-			CODE = session.getAttribute("code").toString();
-		System.out.println("code : " + CODE);
-		
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> data = new HashMap<String, Object>();
-		if (!code.equals(CODE)) {
+		if (username.equals("") || password.equals("")) {
 			map.put("status", 500);
-			map.put("data", data);
-			map.put("errmsg", "验证码错误");
-			System.out.println("验证码错误");
-			return map;
-		}
-        if (userService.addUser(phone, username, password)) {
-        	map.put("status", 200);
         	map.put("data", data);
-        	System.out.println("------注册成功------");
-        	return map;
-        }
-        else {
-        	map.put("status", 500);
-        	map.put("data", data);
-        	map.put("errmsg", "注册失败");
+        	map.put("errmsg", "用户名或密码不能为空");
         	System.out.println("------注册失败------");
         	return map;
-        }
+		}
+		
+		try {
+			int status = userService.addUser(phone, username, password, code);
+			if (status == 0) {
+	        	map.put("status", 500);
+	        	map.put("data", data);
+	        	map.put("errmsg", "用户名已存在");
+	        	System.out.println("------注册失败------");
+	        	return map;
+	        }
+	        if (status == 1) {
+	        	map.put("status", 200);
+	        	map.put("data", data);
+	        	System.out.println("------注册成功------");
+	        	return map;
+	        }
+	        else if (status == 3) {
+	        	map.put("status", 500);
+	        	map.put("data", data);
+	        	map.put("errmsg", "验证码错误");
+	        	System.out.println("------注册失败------");
+	        	return map;
+	        }
+	        else {
+	        	map.put("status", 500);
+	        	map.put("data", data);
+	        	map.put("errmsg", "手机号已被注册");
+	        	System.out.println("------注册失败------");
+	        	return map;
+	        }
+		} catch (Exception e) {
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("errmsg", "请求失败，请重试");
+		}
+		return map;
 	}
 	
 	/*
@@ -125,28 +155,40 @@ public class UserController {
 	@RequestMapping(value="/login", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> login(@RequestParam(value="username")String username, @RequestParam(value="password")String password,
-			HttpServletResponse response, HttpSession session) {
+			HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> data = new HashMap<String, Object>();
-		User user = new User(username, password);
-		int id = userService.checkUser(user);
-		if (id != -1) {
-			map.put("status", 200);
-			data.put("id", id);
-			map.put("data", data);
-			session.setAttribute("user", id);
-			
-			//添加cookie
-			Cookie cookie = new Cookie("user", username+"+"+id);
-			cookie.setMaxAge(60*60*24);
-			response.addCookie(cookie);
-			System.out.println("------登录成功------");
-		}
-		else {
+		try {
+			User user = new User(username, password);
+			int id = userService.checkUser(user);
+			if (id != -1) {
+				map.put("status", 200);
+				data.put("id", id);
+				map.put("data", data);
+				session.setAttribute("user", id);
+				
+				Cookie[] cookies = request.getCookies();
+				for (Cookie c : cookies) {
+					System.out.println(c.getName() + " : " + c.getValue());
+				}
+				
+				//添加cookie
+				Cookie cookie = new Cookie("user", username+"+"+id);
+				cookie.setMaxAge(60*60*24);
+				response.addCookie(cookie);
+				System.out.println("------登录成功------");
+			}
+			else {
+				map.put("status", 500);
+				map.put("data", data);
+				map.put("errmsg", "用户名或密码错误");
+				System.out.println("------登录失败------");
+			}
+		} catch (Exception e) {
+			data = new HashMap<String, Object>();
 			map.put("status", 500);
 			map.put("data", data);
-			map.put("errmsg", "用户名或密码错误");
-			System.out.println("------登录失败------");
+			map.put("errmsg", "请求失败，请重试");
 		}
 		return map;
 	}
@@ -160,28 +202,35 @@ public class UserController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		Cookie[] cookies = request.getCookies();
-		for (Cookie cookie : cookies) {
-			if (cookie.getName().equals("user")) {
-				String username = cookie.getValue().substring(0, cookie.getValue().indexOf('+'));
-				String value = cookie.getValue().substring(cookie.getValue().indexOf('+')+1);
-				int id =Integer.parseInt(value);
-				
-				session.setAttribute("user", id);
-				//更新cookie
-				Cookie cookie1 = new Cookie("user", username+"+"+id);
-				cookie1.setMaxAge(60*60*24);
-				response.addCookie(cookie1);
-				data.put("id", id);
-				map.put("data", data);
-				map.put("status", 200);
+		try {
+			Cookie[] cookies = request.getCookies();
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("user")) {
+					String username = cookie.getValue().substring(0, cookie.getValue().indexOf('+'));
+					String value = cookie.getValue().substring(cookie.getValue().indexOf('+')+1);
+					int id =Integer.parseInt(value);
+					
+					session.setAttribute("user", id);
+					//更新cookie
+					Cookie cookie1 = new Cookie("user", username+"+"+id);
+					cookie1.setMaxAge(60*60*24);
+					response.addCookie(cookie1);
+					data.put("id", id);
+					map.put("data", data);
+					map.put("status", 200);
+					break;
+				}
 			}
-		}
-		if (session.getAttribute("user") == null) {
-			System.out.println("----没有cookie或cookie过期----");
+			if (session.getAttribute("user") == null) {
+				System.out.println("----没有cookie或cookie过期----");
+				map.put("status", 500);
+				map.put("data", data);
+				map.put("errmsg", "自动登录失败，请重新登录");
+			}
+		} catch (Exception e) {
 			map.put("status", 500);
 			map.put("data", data);
-			map.put("errmsg", "自动登录失败，请重新登录");
+			map.put("errmsg", "请求失败");
 		}
 		return map;
 	}
@@ -195,19 +244,24 @@ public class UserController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> data = new HashMap<String, Object>();
 		
-		if (session.getAttribute("user") != null) session.removeAttribute("user");
-
-		Cookie[] cookies = request.getCookies();
-		for (Cookie cookie : cookies) {
-			if (cookie.getName().equals("user")) {
-				//删除cookie
-				Cookie cookie1 = new Cookie("user", "");
-				cookie1.setMaxAge(0);
-				response.addCookie(cookie1);
+		try {
+			if (session.getAttribute("user") != null) session.removeAttribute("user");
+			Cookie[] cookies = request.getCookies();
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("user")) {
+					//删除cookie
+					Cookie cookie1 = new Cookie("user", "");
+					cookie1.setMaxAge(0);
+					response.addCookie(cookie1);
+				}
 			}
+			map.put("status", 200);
+			map.put("data", data);
+		} catch (Exception e) {
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("errmsg", "请求失败，请重试");
 		}
-		map.put("status", 200);
-		map.put("data", data);
 		return map;
 	}
 
@@ -216,26 +270,34 @@ public class UserController {
 	 */
 	@RequestMapping(value="/contacts", method=RequestMethod.GET)
 	@ResponseBody
-	public Map<String, Object> getContacts(HttpSession session) {
+	public Map<String, Object> getContacts(HttpServletRequest request, HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		List<Map<String, String>> data = new ArrayList<Map<String,String>>();
 		if (session.getAttribute("user") == null) {
 			map.put("status", 500);
-			map.put("ermsg", "请先登录");
+			map.put("errmsg", "请先登录");
+			map.put("data", data);
 			return map;
 		}
-		int id = (Integer) session.getAttribute("user");
-		List<Contact> contacts = userService.getContacts(id);
-		List<Map<String, String>> data = new ArrayList<Map<String,String>>();
-		for (Contact c : contacts) {
-			Map<String, String> m = new HashMap<String, String>();
-			String u = c.getContact_user();
-			String p = c.getContact_phone();
-			m.put("username", u);
-			m.put("phone", p);
-			data.add(m);
+		
+		try {
+			int id = (Integer) session.getAttribute("user");
+			List<Contact> contacts = userService.getContacts(id);
+			for (Contact c : contacts) {
+				Map<String, String> m = new HashMap<String, String>();
+				String u = c.getContact_user();
+				String p = c.getContact_phone();
+				m.put("username", u);
+				m.put("phone", p);
+				data.add(m);
+			}
+			map.put("status", "200");
+			map.put("data", data);
+		} catch (Exception e) {
+			map.put("status", 500);
+			map.put("errmsg", "请求失败，请重试");
+			map.put("data", data);
 		}
-		map.put("status", "200");
-		map.put("data", data);
 		return map;
 	}
 	
@@ -247,45 +309,118 @@ public class UserController {
 	public Map<String, Object> addContact(@RequestParam(value="username")String username, @RequestParam(value="phone")String phone,
 			HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<String, Object>();
 		if (session.getAttribute("user") == null) {
 			map.put("status", 500);
+			map.put("data", data);
 			map.put("ermsg", "请先登录");
 			return map;
 		}
-		int id = (Integer) session.getAttribute("user");
-		Contact contact = new Contact(id, username, phone);
-		if (userService.addContact(contact)) map.put("status", 200);
-		else {
+		try {
+			int id = (Integer) session.getAttribute("user");
+			Contact contact = new Contact(id, username, phone);
+			if (userService.addContact(contact)) map.put("status", 200);
+			else {
+				map.put("status", 500);
+				map.put("errmsg", "添加失败");
+			}
+			map.put("data", data);
+		} catch (Exception e) {
 			map.put("status", 500);
-			map.put("errmsg", "添加失败");
+			map.put("data", data);
+			map.put("ermsg", "请求失败，请重试");
+		
 		}
+		
+		
 		return map;
 	}
 	
 	/*
 	 * 我的模块
 	 */
-	@RequestMapping(value="/{id}", method=RequestMethod.POST)
+	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> addContact(@PathVariable("id") int id, HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<String, Object>();
 		if (session.getAttribute("user") == null) {
 			map.put("status", 500);
+			map.put("data", data);
 			map.put("ermsg", "请先登录");
 			return map;
 		}
-		List<Map<String, Object>> launch = new ArrayList<Map<String,Object>>();
-		List<Map<String, Object>> response = new ArrayList<Map<String,Object>>();
-		//我发起的
-		List<Object[]> results = userService.getLaunch(id);
-				
-		
-		
-		//我响应的
-		List<Object[]> results2 = userService.getResponse(id);
-		
-		
-		
+		try {
+			//我发起的
+			List<Map<String, Object>> launch = new ArrayList<Map<String,Object>>();
+			List<Object[]> results = userService.getLaunch(id);
+			for (Object[] o : results) {
+				//提问
+				if ((Integer)o[0] == 0) {
+					Map<String, Object> m = new HashMap<String, Object>();
+					m.put("type", o[0]);
+					m.put("id", o[1]);
+					m.put("title", o[2]);
+					m.put("date", sdf.format(o[3]));
+					m.put("num", o[4]);
+					launch.add(m);
+				}
+				//求助
+				else if ((Integer)o[0] == 1) {
+					Map<String, Object> m = new HashMap<String, Object>();
+					m.put("type", o[0]);
+					m.put("id", o[1]);
+					m.put("title", o[2]);
+					m.put("date", sdf.format(o[3]));
+					m.put("finished", o[4]);
+					m.put("num", o[5]);
+					launch.add(m);
+				}
+				//求救
+				else {
+					Map<String, Object> m = new HashMap<String, Object>();
+					m.put("type", o[0]);
+					m.put("id", o[1]);
+					m.put("date", sdf.format(o[3]));
+					launch.add(m);
+				}
+			}
+			
+			//我响应的
+			List<Map<String, Object>> response = new ArrayList<Map<String,Object>>();
+			List<Object[]> results2 = userService.getResponse(id);
+			for (Object[] o : results2) {
+				//提问
+				if ((Integer)o[0] == 0) {
+					Map<String, Object> m = new HashMap<String, Object>();
+					m.put("type", o[0]);
+					m.put("id", o[1]);
+					m.put("title", o[2]);
+					m.put("launcher_username", o[3]);
+					m.put("num", o[4]);
+					response.add(m);
+				}
+				else if ((Integer)o[0] == 1) {
+					Map<String, Object> m = new HashMap<String, Object>();
+					m.put("type", o[0]);
+					m.put("id", o[1]);
+					m.put("title", o[2]);
+					m.put("launcher_username", o[3]);
+					m.put("finished", o[4]);
+					response.add(m);
+				}
+			}
+			
+			data.put("launch", launch);
+			data.put("response", response);
+			map.put("data", data);
+			map.put("status", 200);
+			
+		} catch (Exception e) {
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请求失败，请重试");
+		}
 		return map;
 	}
 }

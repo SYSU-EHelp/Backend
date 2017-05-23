@@ -17,8 +17,35 @@ import com.ehelp.util.DBSessionUtil;
 @Repository
 public class UserDaoImpl implements UserDao {
 
-	// 用以注册时检查该手机号是否已被注册
-	public boolean phoneExisted(String phone) {
+	public String getName(int id) {
+		Session session = DBSessionUtil.getSession();
+		User u = (User) session.get(User.class, id);
+		String name = "";
+		if (u != null) name = u.getUsername();
+		DBSessionUtil.closeSession(session);
+		return name;
+	}
+	
+	//添加验证码
+	public boolean addCode(String phone, String code) {
+		Session session = DBSessionUtil.getSession();
+		Query query = session.createQuery(" from User u where u.phone=:phone");
+		query.setParameter("phone", phone);
+		User u = (User) query.uniqueResult();
+		if (u != null) {
+			u.setCode(code);
+			session.update(u);
+		}
+		else {
+			u = new User("", "", phone, "", code);
+			session.save(u);
+		}
+		DBSessionUtil.closeSession(session);
+		return true;
+	}
+	
+	// 用以发送验证码时检查该手机号是否已被使用
+	public boolean phoneExisted(String phone, String code) {
 		Session session = DBSessionUtil.getSession();
 		// 查询语句
 		Query query = session.createQuery(" from User u where u.phone=:phone");
@@ -27,19 +54,40 @@ public class UserDaoImpl implements UserDao {
 		// 查询结果
 		User u = (User) query.uniqueResult();
 		// 事务提交并关闭
-		DBSessionUtil.closeSession(session);
-		if (u == null) {
-			return false;
+		if (u != null && !u.getUsername().equals("")) {
+			DBSessionUtil.closeSession(session);
+			return true;
 		}
-		return true;
+		else return false;
 	}
 	
 	// 注册添加用户
-	public boolean addUser(String username, String password, String phone, String avatar) {
+	public int addUser(String username, String password, String phone, String avatar, String code) {
 		Session session = DBSessionUtil.getSession();
-		session.save(new User(username, password, phone, avatar));
-		DBSessionUtil.closeSession(session);
-		return true;
+		Query query = session.createQuery(" from User u where u.username=:username");
+		query.setParameter("username", username);
+		User u = (User) query.uniqueResult();
+		if (u != null) {
+			DBSessionUtil.closeSession(session);
+			return 0; //用户名已存在
+		}
+		
+		query = session.createQuery(" from User u where u.phone=:phone");
+		query.setParameter("phone", phone);
+		u = (User) query.uniqueResult();
+		if (u != null && code.equals(u.getCode())) {
+			System.out.println(u.toString());
+			u.setUsername(username);
+			u.setPassword(password);
+			u.setAvatar(avatar);
+			session.update(u);
+			DBSessionUtil.closeSession(session);
+			return 1; //成功
+		}
+		else {
+			DBSessionUtil.closeSession(session);
+			return 2; //验证码错误
+		}
 	}
 
 	// 用以登录时检查数据库中是否存在该用户
@@ -63,6 +111,14 @@ public class UserDaoImpl implements UserDao {
 	//添加紧急联系人
 	public boolean addContact(Contact contact) {
 		Session session = DBSessionUtil.getSession();
+		Query query = session.createQuery(" from Contact c where c.user_id=:user_id and c.contact_user=:contact_user and c.contact_phone=:contact_phone");
+		query.setParameter("user_id", contact.getId());
+		query.setParameter("contact_user", contact.getContact_user());
+		query.setParameter("contact_phone", contact.getContact_phone());
+		
+		Contact c = (Contact) query.uniqueResult();
+	
+		if (c != null) return false;
 		session.save(contact);
 		DBSessionUtil.closeSession(session);
 		return true;
@@ -114,7 +170,7 @@ public class UserDaoImpl implements UserDao {
 		for (Object[] o : que1) {
 			if ((Integer)o[4] == 1) {
 				o[0] = 1;
-				o[5] = null;
+				o[5] = 0;
 			}
 			else {
 				int help_id = (Integer) o[1];
@@ -183,15 +239,19 @@ public class UserDaoImpl implements UserDao {
 		
 		//求助
 		List<Object[]> que1 = new ArrayList<Object[]>();
-		query = session.createQuery("select h.launcher_id, h.id, h.title, u1.username, h.finished "
-				+ "from Help h, User u, User u1, Response r "
-				+ "where r.event_type=1 and r.user_id=:id and r.event_id=h.id and h.launcher_id=u1.id");
+		query = session.createQuery("select h.launcher_id, h.id, h.title, h.address, h.finished "
+				+ "from Help h, Response r "
+				+ "where r.user_id=:id and r.event_id=h.id");
 		query.setParameter("id", id);
 		que1 = query.list();
-		DBSessionUtil.closeSession(session);
 		
 		for (Object[] o : que1) {
 			o[0] = 1;
+			query = session.createQuery("select u.username "
+					+ "from Help h, User u "
+					+ "where h.id=:id and h.launcher_id=u.id");
+			query.setParameter("id", o[1]);
+			o[3] = query.uniqueResult();
 		}
 		
 		for (Object[] o : que) {
@@ -201,16 +261,21 @@ public class UserDaoImpl implements UserDao {
 			results.add(o);
 		}
 		
+		DBSessionUtil.closeSession(session);
 		return results;
 	}
 
 	public static void main(String[] args) {
 		UserDaoImpl dao = new UserDaoImpl();
-		
-		List<Object[]> results = dao.getResponse(3);
+		List<Object[]> results = dao.getLaunch(3);
 		for (Object[] c : results) {
-			System.out.println(c[0]);
+			System.out.println("事件类型：" + c[0] + ", 事件标题：" + c[1] + "时间：" + c[3]);
 		}
+		
+//		List<Object[]> results = dao.getResponse(3);
+//		for (Object[] c : results) {
+//			System.out.println("事件类型：" + c[0] + ", 事件标题：" + c[2]);
+//		}
 		
 	}
 

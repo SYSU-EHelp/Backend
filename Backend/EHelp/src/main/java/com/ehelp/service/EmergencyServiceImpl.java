@@ -1,6 +1,7 @@
 package com.ehelp.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,6 @@ public class EmergencyServiceImpl implements EmergencyService {
 
 	public List<String> getPhones(int id) {
 		return emergencyDao.getPhones(id);
-	}
-
-	public String getName(int id) {
-		return emergencyDao.getName(id);
 	}
 	
 }

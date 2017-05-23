@@ -19,6 +19,7 @@ public class User {
 	private String password; // 密码
 	private String phone; // 手机号
 	private String avatar; // 头像
+	private String code; // 验证码
 
 	public User() {
 	}
@@ -27,12 +28,13 @@ public class User {
 		this.username = username;
 		this.password = password;
 	}
-	
-	public User(String username, String password, String phone, String avatar) {
+
+	public User(String username, String password, String phone, String avatar, String code) {
 		this.username = username;
 		this.password = password;
 		this.phone = phone;
 		this.avatar = avatar;
+		this.code = code;
 	}
 
 	@Id
@@ -46,7 +48,7 @@ public class User {
 		this.id = id;
 	}
 
-	@Column(name = "username", unique = true, nullable = false, length = 45)
+	@Column(name = "username", nullable = false, length = 45)
 	public String getUsername() {
 		return username;
 	}
@@ -73,7 +75,7 @@ public class User {
 		this.phone = phone;
 	}
 
-	@Column(name = "avatar", length = 45)
+	@Column(name = "avatar", nullable = false, length = 45)
 	public String getAvatar() {
 		return avatar;
 	}
@@ -82,10 +84,19 @@ public class User {
 		this.avatar = avatar;
 	}
 
+	@Column(name = "code", nullable = false, length = 45)
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", phone=" + phone + ", avatar="
-				+ avatar + "]";
+				+ avatar + ", code=" + code + "]";
 	}
 
 }

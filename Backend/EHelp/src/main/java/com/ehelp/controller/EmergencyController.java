@@ -38,28 +38,36 @@ public class EmergencyController {
 	 */
 	@RequestMapping(value="", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> launchEmergency(HttpSession session) throws ParseException, ApiException {
+	public Map<String, Object> launchEmergency(HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<String, Object>();
 		if (session.getAttribute("user") == null) {
 			map.put("status", 500);
+			map.put("data", data);
 			map.put("ermsg", "请先登录");
 			return map;
 		}
-		int id = (Integer) session.getAttribute("user");
-		Date date = sdf.parse(sdf.format(new Date()));
-		Emergency e = new Emergency(id, date, 0);
-		if (emergencyService.launchEmergency(e)) {
-			map.put("status", 200);
-			//发送紧急短信
-			List<String> phoneList = emergencyService.getPhones(id);
-			String username = emergencyService.getName(id);
-			for (String phone : phoneList) {
-				SendMessageUtil.send(phone, username);
+		try {
+			int id = (Integer) session.getAttribute("user");
+			Date date = sdf.parse(sdf.format(new Date()));
+			Emergency e = new Emergency(id, date, 0);
+			if (emergencyService.launchEmergency(e)) {
+				map.put("status", 200);
+				//发送紧急短信
+				List<String> list = emergencyService.getPhones(id);
+				String name = userService.getName(id);
+				SendMessageUtil.send2(name, list);
 			}
-		}
-		else {
+			else {
+				map.put("status", 500);
+				map.put("errmsg", "求救失败");
+			}
+			map.put("data", data);
+		} catch (Exception e) {
 			map.put("status", 500);
-			map.put("errmsg", "求救失败");
+			map.put("data", data);
+			map.put("ermsg", "请求失败，请重试");
+			return map;
 		}
 		return map;
 	}

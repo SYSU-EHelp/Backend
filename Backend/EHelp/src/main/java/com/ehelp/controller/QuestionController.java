@@ -41,26 +41,32 @@ public class QuestionController {
 	@ResponseBody
 	public Map<String, Object> getQuestions(HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		List<Map<String, Object>> data = new ArrayList<Map<String,Object>>();
 		if (session.getAttribute("user") == null) {
 			map.put("status", 500);
+			map.put("data", data);
 			map.put("ermsg", "请先登录");
 			return map;
 		}
-		
-		map.put("status", "200");
-		List<QuestionResult> results = questionService.getAllQuestions();
-		List<Map<String, Object>> data = new ArrayList<Map<String,Object>>();
-		for (QuestionResult q : results) {
-			Map<String, Object> m = new HashMap<String, Object>();
-			m.put("id", q.getId());
-			m.put("title", q.getTitle());
-			m.put("description", q.getAsk_description());
-			m.put("date", sdf.format(q.getAsk_date()));
-			m.put("asker_username", q.getAsker_username());
-			m.put("asker_avatar", q.getAsker_avatar());
-			data.add(m);
+		try {
+			map.put("status", "200");
+			List<QuestionResult> results = questionService.getAllQuestions();
+			for (QuestionResult q : results) {
+				Map<String, Object> m = new HashMap<String, Object>();
+				m.put("id", q.getId());
+				m.put("title", q.getTitle());
+				m.put("description", q.getAsk_description());
+				m.put("date", sdf.format(q.getAsk_date()));
+				m.put("asker_username", q.getAsker_username());
+				m.put("asker_avatar", q.getAsker_avatar());
+				data.add(m);
+			}
+			map.put("data", data);
+		} catch (Exception e) {
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请求失败，请重试");
 		}
-		map.put("data", data);
 		return map;
 	}
 	
@@ -71,24 +77,30 @@ public class QuestionController {
 	@ResponseBody
 	public Map<String, Object> question(@PathVariable("id") int id, HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		List<Map<String, Object>> data = new ArrayList<Map<String,Object>>();
 		if (session.getAttribute("user") == null) {
 			map.put("status", 500);
+			map.put("data", data);
 			map.put("ermsg", "请先登录");
 			return map;
 		}
-		
-		map.put("status", "200");
-		List<QuestionResult> results = questionService.getQuestion(id);
-		List<Map<String, Object>> data = new ArrayList<Map<String,Object>>();
-		for (QuestionResult q : results) {
-			Map<String, Object> m = new HashMap<String, Object>();
-			m.put("answerer_username", q.getAnswerer_username());
-			m.put("answerer_avatar", q.getAnswerer_avatar());
-			m.put("description", q.getAnswer_description());
-			m.put("date", sdf.format(q.getAnswer_date()));
-			data.add(m);
+		try {
+			map.put("status", "200");
+			List<QuestionResult> results = questionService.getQuestion(id);
+			for (QuestionResult q : results) {
+				Map<String, Object> m = new HashMap<String, Object>();
+				m.put("answerer_username", q.getAnswerer_username());
+				m.put("answerer_avatar", q.getAnswerer_avatar());
+				m.put("description", q.getAnswer_description());
+				m.put("date", sdf.format(q.getAnswer_date()));
+				data.add(m);
+			}
+			map.put("data", data);
+		} catch (Exception e) {
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请求失败，请重试");
 		}
-		map.put("data", data);
 		return map;
 	}
 	
@@ -98,21 +110,29 @@ public class QuestionController {
 	@RequestMapping(value="", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> ask(@RequestParam(value="title")String title, @RequestParam(value="description")String description,
-			HttpSession session) throws ParseException {
-		
+			HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<String, Object>();
 		if (session.getAttribute("user") == null) {
 			map.put("status", 500);
+			map.put("data", data);
 			map.put("errmsg", "请先登录");
 			return map;
 		}
-		int asker_id = (Integer) session.getAttribute("user");
-		Date date = sdf.parse(sdf.format(new Date()));
-		Question q = new Question(title, description, asker_id, date);
-		if (questionService.ask(q)) map.put("status", 200);
-		else {
+		try {
+			int asker_id = (Integer) session.getAttribute("user");
+			Date date = sdf.parse(sdf.format(new Date()));
+			Question q = new Question(title, description, asker_id, date);
+			if (questionService.ask(q)) map.put("status", 200);
+			else {
+				map.put("status", 500);
+				map.put("errmsg", "提问失败");
+			}
+			map.put("data", data);
+		} catch (Exception e) {
 			map.put("status", 500);
-			map.put("errmsg", "提问失败");
+			map.put("data", data);
+			map.put("errmsg", "请求失败，请重试");
 		}
 		return map;
 	}
@@ -122,20 +142,29 @@ public class QuestionController {
 	 */
 	@RequestMapping(value="/{id}", method=RequestMethod.PATCH)
 	@ResponseBody
-	public Map<String, Object> answer(@PathVariable("id") int id, @RequestParam(value="answer")String answer, HttpSession session) throws ParseException {
+	public Map<String, Object> answer(@PathVariable("id") int id, @RequestParam(value="answer")String answer, HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<String, Object>();
 		if (session.getAttribute("user") == null) {
 			map.put("status", 500);
+			map.put("data", data);
 			map.put("errmsg", "请先登录");
 			return map;
 		}
-		int answerer_id = (Integer) session.getAttribute("user");
-		Date date = sdf.parse(sdf.format(new Date()));
-		Answer a = new Answer(id, answerer_id, answer, date);
-		if (questionService.answer(a)) map.put("status", 200);
-		else {
+		try {
+			int answerer_id = (Integer) session.getAttribute("user");
+			Date date = sdf.parse(sdf.format(new Date()));
+			Answer a = new Answer(id, answerer_id, answer, date);
+			if (questionService.answer(a)) map.put("status", 200);
+			else {
+				map.put("status", 500);
+				map.put("errmsg", "回答失败");
+			}
+			map.put("data", data);
+		} catch (Exception e) {
 			map.put("status", 500);
-			map.put("errmsg", "回答失败");
+			map.put("data", data);
+			map.put("errmsg", "请求失败，请重试");
 		}
 		return map;
 	}
