@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ehelp.entity.Help;
 import com.ehelp.entity.Response;
 import com.ehelp.service.HelpServiceImpl;
+import com.ehelp.util.EncodingUtil;
 
 @Controller
 @RequestMapping("/helps")
@@ -94,10 +95,12 @@ public class HelpController {
 				m.put("description", o[2]);
 				m.put("address", o[3]);
 				m.put("finished", o[4]);
-				m.put("date", o[5]);
+				m.put("date", sdf.format(o[5]));
 				m.put("launcher_username", o[6]);
 				m.put("launcher_avatar", o[7]);
 				m.put("phone", o[8]);
+				m.put("longitude", o[9]);
+				m.put("latitude", o[10]);
 				data.add(m);
 			}
 			map.put("data", data);
@@ -175,7 +178,8 @@ public class HelpController {
 	@RequestMapping(value="", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> launchHelp(@RequestParam(value="title")String title, @RequestParam(value="description")String description,
-			@RequestParam(value="address")String address, HttpSession session) {
+			@RequestParam(value="address")String address, @RequestParam(value="longitude")double longitude, @RequestParam(value="latitude")double latitude, 
+			HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> data = new HashMap<String, Object>();
 		if (session.getAttribute("user") == null) {
@@ -185,9 +189,12 @@ public class HelpController {
 			return map;
 		}
 		try {
+			title = EncodingUtil.encodeStr(title);
+			description = EncodingUtil.encodeStr(description);
+			address = EncodingUtil.encodeStr(address);
 			int id = (Integer) session.getAttribute("user");
 			Date date = sdf.parse(sdf.format(new Date()));
-			Help h = new Help(id, title, description, date, address, 0);
+			Help h = new Help(id, title, description, date, address, longitude, latitude, 0);
 			if (helpService.launchHelp(h)) map.put("status", 200);
 			else {
 				map.put("status", 500);

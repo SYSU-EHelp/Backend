@@ -120,6 +120,9 @@ public class QuestionController {
 			return map;
 		}
 		try {
+			title = EncodingUtil.encodeStr(title);
+			description = EncodingUtil.encodeStr(description);
+			System.out.println(title + " : " + description);
 			int asker_id = (Integer) session.getAttribute("user");
 			Date date = sdf.parse(sdf.format(new Date()));
 			Question q = new Question(title, description, asker_id, date);
@@ -152,6 +155,7 @@ public class QuestionController {
 			return map;
 		}
 		try {
+			answer = EncodingUtil.encodeStr(answer);
 			int answerer_id = (Integer) session.getAttribute("user");
 			Date date = sdf.parse(sdf.format(new Date()));
 			Answer a = new Answer(id, answerer_id, answer, date);

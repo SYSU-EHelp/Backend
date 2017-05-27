@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ehelp.entity.Contact;
 import com.ehelp.entity.User;
 import com.ehelp.service.UserServiceImpl;
+import com.ehelp.util.EncodingUtil;
 import com.ehelp.util.SendMessageUtil;
 import com.taobao.api.ApiException;
 
@@ -317,6 +318,7 @@ public class UserController {
 			return map;
 		}
 		try {
+			username = EncodingUtil.encodeStr(username);
 			int id = (Integer) session.getAttribute("user");
 			Contact contact = new Contact(id, username, phone);
 			if (userService.addContact(contact)) map.put("status", 200);

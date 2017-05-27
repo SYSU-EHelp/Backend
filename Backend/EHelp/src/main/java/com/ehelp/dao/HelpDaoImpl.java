@@ -33,7 +33,8 @@ public class HelpDaoImpl implements HelpDao {
 		List<Object[]> results = new ArrayList<Object[]>();
 		Session session = DBSessionUtil.getSession();
 		// 查询语句
-		Query query = session.createQuery("select h.id, h.title, h.description, h.address, h.finished, h.date, u.username, u.avatar, u.phone "
+		Query query = session.createQuery("select h.id, h.title, h.description, h.address, h.finished, h.date, "
+				+ "u.username, u.avatar, u.phone, h.longitude, h.latitude "
 				+ "from Help h, User u where h.launcher_id=u.id and h.id=:id");
 		query.setParameter("id", id);
 		// 查询结果

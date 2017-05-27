@@ -13,7 +13,7 @@ import javax.persistence.Table;
  * 求助类
  */
 @Entity
-@Table(name="help")
+@Table(name = "help")
 public class Help {
 
 	private int id; // 求助项id
@@ -22,13 +22,14 @@ public class Help {
 	private String description; // 求助内容详情
 	private Date date; // 求助日期
 	private String address; // 求助者地址
+	private double longitude; // 经度
+	private double latitude; // 纬度
 	private int finished; // 是否求助结束
 
 	public Help() {
 	}
 
 	public Help(int launcher_id, String title, String description, Date date, String address, int finished) {
-		super();
 		this.launcher_id = launcher_id;
 		this.title = title;
 		this.description = description;
@@ -36,10 +37,22 @@ public class Help {
 		this.address = address;
 		this.finished = finished;
 	}
+	
+	public Help(int launcher_id, String title, String description, Date date, String address, double longitude,
+			double latitude, int finished) {
+		this.launcher_id = launcher_id;
+		this.title = title;
+		this.description = description;
+		this.date = date;
+		this.address = address;
+		this.longitude = longitude;
+		this.latitude = latitude;
+		this.finished = finished;
+	}
 
 	@Id
-	@Column(name="id", nullable = false)
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	public int getId() {
 		return id;
 	}
@@ -48,7 +61,7 @@ public class Help {
 		this.id = id;
 	}
 
-	@Column(name="launcher_id", nullable = false)
+	@Column(name = "launcher_id", nullable = false)
 	public int getLauncher_id() {
 		return launcher_id;
 	}
@@ -57,7 +70,7 @@ public class Help {
 		this.launcher_id = launcher_id;
 	}
 
-	@Column(name="title", nullable = false, length = 45)
+	@Column(name = "title", nullable = false, length = 45)
 	public String getTitle() {
 		return title;
 	}
@@ -66,7 +79,7 @@ public class Help {
 		this.title = title;
 	}
 
-	@Column(name="description", nullable = false, length = 200)
+	@Column(name = "description", nullable = false, length = 200)
 	public String getDescription() {
 		return description;
 	}
@@ -75,7 +88,7 @@ public class Help {
 		this.description = description;
 	}
 
-	@Column(name="date", nullable = false)
+	@Column(name = "date", nullable = false)
 	public Date getDate() {
 		return date;
 	}
@@ -84,7 +97,7 @@ public class Help {
 		this.date = date;
 	}
 
-	@Column(name="address", nullable = false, length = 200)
+	@Column(name = "address", nullable = false, length = 200)
 	public String getAddress() {
 		return address;
 	}
@@ -93,7 +106,25 @@ public class Help {
 		this.address = address;
 	}
 
-	@Column(name="finished", nullable = false)
+	@Column(name = "longitude", nullable = false)
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	@Column(name = "latitude", nullable = false)
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	@Column(name = "finished", nullable = false)
 	public int getFinished() {
 		return finished;
 	}
@@ -105,7 +136,8 @@ public class Help {
 	@Override
 	public String toString() {
 		return "Help [id=" + id + ", launcher_id=" + launcher_id + ", title=" + title + ", description=" + description
-				+ ", date=" + date + ", address=" + address + ", finished=" + finished + "]";
+				+ ", date=" + date + ", address=" + address + ", longitude=" + longitude + ", latitude=" + latitude
+				+ ", finished=" + finished + "]";
 	}
 
 }
