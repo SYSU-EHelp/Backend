@@ -195,7 +195,11 @@ public class HelpController {
 			int id = (Integer) session.getAttribute("user");
 			Date date = sdf.parse(sdf.format(new Date()));
 			Help h = new Help(id, title, description, date, address, longitude, latitude, 0);
-			if (helpService.launchHelp(h)) map.put("status", 200);
+			int help_id = helpService.launchHelp(h);
+			if (help_id >= 0) {
+				map.put("status", 200);
+				data.put("id", help_id);
+			}
 			else {
 				map.put("status", 500);
 				map.put("errmsg", "求助失败");

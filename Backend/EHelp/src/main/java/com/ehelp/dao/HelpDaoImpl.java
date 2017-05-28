@@ -63,11 +63,24 @@ public class HelpDaoImpl implements HelpDao {
 	}
 
 	//添加求助
-	public boolean launchHelp(Help p) {
+	public int launchHelp(Help p) {
 		Session session = DBSessionUtil.getSession();
 		session.save(p);
 		DBSessionUtil.closeSession(session);
-		return true;
+		return getHelpId(p);
+	}
+	
+	public int getHelpId(Help p) {
+		Session session = DBSessionUtil.getSession();
+		Query query = session.createQuery(" from Help h where h.title=:title and h.description=:description and h.date=:date");
+		query.setParameter("title", p.getTitle());
+		query.setParameter("description", p.getDescription());
+		query.setParameter("date", p.getDate());
+		Help help = (Help) query.uniqueResult();
+		if (help == null) return -1;
+		System.out.println(help.toString());
+		DBSessionUtil.closeSession(session);
+		return help.getId();
 	}
 
 	//根据id查看响应详情

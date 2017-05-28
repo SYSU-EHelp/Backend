@@ -31,7 +31,7 @@ public class HelpServiceImpl implements HelpService {
 		return helpDao.endHelp(id);
 	}
 
-	public boolean launchHelp(Help p) {
+	public int launchHelp(Help p) {
 		return helpDao.launchHelp(p);
 	}
 

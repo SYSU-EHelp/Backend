@@ -20,7 +20,7 @@ public interface HelpDao {
 	public boolean endHelp(int id);
 	
 	//添加求助
-	public boolean launchHelp(Help p);
+	public int launchHelp(Help p);
 	
 	//根据id查看响应详情
 	public List<Object[]> getAllResponse(int id);
