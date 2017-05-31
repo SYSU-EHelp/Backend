@@ -88,6 +88,7 @@ public class UserController {
 	        }
 	        return map;
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("errmsg", "请求失败，请重试");
@@ -143,6 +144,7 @@ public class UserController {
 	        	return map;
 	        }
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("errmsg", "请求失败，请重试");
@@ -160,6 +162,7 @@ public class UserController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> data = new HashMap<String, Object>();
 		try {
+			System.out.println(username + " " + password);
 			User user = new User(username, password);
 			int id = userService.checkUser(user);
 			if (id != -1) {
@@ -167,11 +170,6 @@ public class UserController {
 				data.put("id", id);
 				map.put("data", data);
 				session.setAttribute("user", id);
-				
-				Cookie[] cookies = request.getCookies();
-				for (Cookie c : cookies) {
-					System.out.println(c.getName() + " : " + c.getValue());
-				}
 				
 				//添加cookie
 				Cookie cookie = new Cookie("user", username+"+"+id);
@@ -186,6 +184,7 @@ public class UserController {
 				System.out.println("------登录失败------");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			data = new HashMap<String, Object>();
 			map.put("status", 500);
 			map.put("data", data);
@@ -229,6 +228,7 @@ public class UserController {
 				map.put("errmsg", "自动登录失败，请重新登录");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("errmsg", "请求失败");
@@ -259,6 +259,7 @@ public class UserController {
 			map.put("status", 200);
 			map.put("data", data);
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("errmsg", "请求失败，请重试");
@@ -295,6 +296,7 @@ public class UserController {
 			map.put("status", "200");
 			map.put("data", data);
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("errmsg", "请求失败，请重试");
 			map.put("data", data);
@@ -328,13 +330,11 @@ public class UserController {
 			}
 			map.put("data", data);
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("ermsg", "请求失败，请重试");
-		
 		}
-		
-		
 		return map;
 	}
 	
@@ -419,6 +419,7 @@ public class UserController {
 			map.put("status", 200);
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("ermsg", "请求失败，请重试");

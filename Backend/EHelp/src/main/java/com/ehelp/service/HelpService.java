@@ -14,7 +14,7 @@ public interface HelpService {
 	public List<Object[]> getHelp(int id);
 	
 	//响应求助
-	public boolean responseHelp(Response r);
+	public int responseHelp(Response r);
 	
 	//结束求助
 	public boolean endHelp(int id);

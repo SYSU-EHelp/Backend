@@ -56,14 +56,17 @@ public class HelpController {
 				m.put("description", o[2]);
 				m.put("address", o[3]);
 				m.put("finished", o[4]);
-				m.put("date", o[5].toString());
+				m.put("date", sdf.format((Date)o[5]));
 				m.put("launcher_username", o[6]);
 				m.put("launcher_avatar", o[7]);
 				m.put("phone", o[8]);
+				m.put("longitude", o[9]);
+				m.put("latitude", o[10]);
 				data.add(m);
 			}
 			map.put("data", data);
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("ermsg", "请求失败，请重试");
@@ -86,25 +89,33 @@ public class HelpController {
 			return map;
 		}
 		try {
-			map.put("status", "200");
 		 	List<Object[]> results = helpService.getHelp(id);
-			for (Object[] o : results) {
-				Map<String, Object> m = new HashMap<String, Object>();
-				m.put("id", o[0]);
-				m.put("title", o[1]);
-				m.put("description", o[2]);
-				m.put("address", o[3]);
-				m.put("finished", o[4]);
-				m.put("date", sdf.format(o[5]));
-				m.put("launcher_username", o[6]);
-				m.put("launcher_avatar", o[7]);
-				m.put("phone", o[8]);
-				m.put("longitude", o[9]);
-				m.put("latitude", o[10]);
-				data.add(m);
-			}
-			map.put("data", data);
+		 	if (results.size() == 0) {
+		 		map.put("status", 500);
+				map.put("data", data);
+				map.put("ermsg", "事件不存在，请重试");
+		 	}
+		 	else {
+		 		map.put("status", "200");
+				for (Object[] o : results) {
+					Map<String, Object> m = new HashMap<String, Object>();
+					m.put("id", o[0]);
+					m.put("title", o[1]);
+					m.put("description", o[2]);
+					m.put("address", o[3]);
+					m.put("finished", o[4]);
+					m.put("date", sdf.format((Date)o[5]));
+					m.put("launcher_username", o[6]);
+					m.put("launcher_avatar", o[7]);
+					m.put("phone", o[8]);
+					m.put("longitude", o[9]);
+					m.put("latitude", o[10]);
+					data.add(m);
+				}
+				map.put("data", data);
+		 	}
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("ermsg", "请求失败，请重试");
@@ -129,13 +140,19 @@ public class HelpController {
 		try {
 			int user_id = (Integer) session.getAttribute("user");
 			Response r = new Response(1, id, user_id);
-			if (helpService.responseHelp(r)) map.put("status", 200);
-			else {
+			int status = helpService.responseHelp(r);
+			if (status == 0) map.put("status", 200);
+			else if (status == 1) {
 				map.put("status", 500);
-				map.put("errmsg", "响应失败");
+				map.put("errmsg", "求助事件已结束");
+			}
+			else if (status == 2) {
+				map.put("status", 500);
+				map.put("errmsg", "您上次响应的求助未结束");
 			}
 			map.put("data", data);
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("ermsg", "请求失败，请重试");
@@ -165,6 +182,7 @@ public class HelpController {
 			}
 			map.put("data", data);
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("ermsg", "请求失败，请重试");
@@ -206,6 +224,7 @@ public class HelpController {
 			}
 			map.put("data", data);
 		} catch (ParseException e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("ermsg", "请求失败，请重试");
@@ -243,6 +262,7 @@ public class HelpController {
 			data.put("num", num);
 			map.put("data", data);
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("ermsg", "请求失败，请重试");

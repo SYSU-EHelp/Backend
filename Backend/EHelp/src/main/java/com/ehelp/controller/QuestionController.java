@@ -63,6 +63,7 @@ public class QuestionController {
 			}
 			map.put("data", data);
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("ermsg", "请求失败，请重试");
@@ -97,6 +98,7 @@ public class QuestionController {
 			}
 			map.put("data", data);
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("ermsg", "请求失败，请重试");
@@ -133,6 +135,7 @@ public class QuestionController {
 			}
 			map.put("data", data);
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("errmsg", "请求失败，请重试");
@@ -166,6 +169,7 @@ public class QuestionController {
 			}
 			map.put("data", data);
 		} catch (Exception e) {
+			e.printStackTrace();
 			map.put("status", 500);
 			map.put("data", data);
 			map.put("errmsg", "请求失败，请重试");

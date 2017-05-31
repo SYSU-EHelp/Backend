@@ -23,7 +23,7 @@ public class HelpServiceImpl implements HelpService {
 		return helpDao.getHelp(id);
 	}
 
-	public boolean responseHelp(Response r) {
+	public int responseHelp(Response r) {
 		return helpDao.responseHelp(r);
 	}
 
