@@ -13,6 +13,9 @@ public interface HelpService {
 	//根据id查看求助详情
 	public List<Object[]> getHelp(int id);
 	
+	//根据id查看求助状态
+	public int getHelpStatus(int id);
+	
 	//响应求助
 	public int responseHelp(Response r);
 	

@@ -128,15 +128,28 @@ public class HelpDaoImpl implements HelpDao {
 		DBSessionUtil.closeSession(session);
 		return results;
 	}
+	
+	//根据id查看求助状态
+	public int getHelpStatus(int id) {
+		Session session = DBSessionUtil.getSession();
+		Query query = session.createQuery("select h.finished "
+				+ "from Help h where h.id=:id");
+		query.setParameter("id", id);
+		int status = (Integer) query.uniqueResult();
+		// 事务提交并关闭
+		DBSessionUtil.closeSession(session);
+		return status;
+	}
 
 	public static void main(String[] args) {
 		HelpDaoImpl h = new HelpDaoImpl();
-		List<Object[]> results = h.getAllHelps();
-		System.out.println(results.size());
-		for (Object[] o : results) {
-			System.out.println(o[9]);
-		}
-		
+//		List<Object[]> results = h.getAllHelps();
+//		System.out.println(results.size());
+//		for (Object[] o : results) {
+//			System.out.println(o[9]);
+//		}
+		int status = h.getHelpStatus(46);
+		System.out.println(status);
 	}
 	
 	

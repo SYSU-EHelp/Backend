@@ -81,7 +81,7 @@ public class HelpController {
 	@ResponseBody
 	public Map<String, Object> getHelp(@PathVariable("id") int id, HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Map<String, Object>> data = new ArrayList<Map<String,Object>>();
+		Map<String, Object> data = new HashMap<String, Object>();
 		if (session.getAttribute("user") == null) {
 			map.put("status", 500);
 			map.put("data", data);
@@ -98,22 +98,49 @@ public class HelpController {
 		 	else {
 		 		map.put("status", "200");
 				for (Object[] o : results) {
-					Map<String, Object> m = new HashMap<String, Object>();
-					m.put("id", o[0]);
-					m.put("title", o[1]);
-					m.put("description", o[2]);
-					m.put("address", o[3]);
-					m.put("finished", o[4]);
-					m.put("date", sdf.format((Date)o[5]));
-					m.put("launcher_username", o[6]);
-					m.put("launcher_avatar", o[7]);
-					m.put("phone", o[8]);
-					m.put("longitude", o[9]);
-					m.put("latitude", o[10]);
-					data.add(m);
+					data.put("id", o[0]);
+					data.put("title", o[1]);
+					data.put("description", o[2]);
+					data.put("address", o[3]);
+					data.put("finished", o[4]);
+					data.put("date", sdf.format((Date)o[5]));
+					data.put("launcher_username", o[6]);
+					data.put("launcher_avatar", o[7]);
+					data.put("phone", o[8]);
+					data.put("longitude", o[9]);
+					data.put("latitude", o[10]);
 				}
 				map.put("data", data);
 		 	}
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请求失败，请重试");
+		}
+		return map;
+	}
+	
+	/*
+	 * 查看求助状态，返回finished信息
+	 */
+	@RequestMapping(value="/{id}/status", method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getHelp2(@PathVariable("id") int id, HttpSession session) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<String, Object>();
+		if (session.getAttribute("user") == null) {
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请先登录");
+			return map;
+		}
+		try {
+	 		map.put("status", "200");
+	 		int status = helpService.getHelpStatus(id);
+	 		data.put("id", id);
+	 		data.put("finished", status);
+			map.put("data", data);
 		} catch (Exception e) {
 			e.printStackTrace();
 			map.put("status", 500);

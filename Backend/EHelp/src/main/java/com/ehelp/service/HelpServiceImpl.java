@@ -38,6 +38,10 @@ public class HelpServiceImpl implements HelpService {
 	public List<Object[]> getAllResponse(int id) {
 		return helpDao.getAllResponse(id);
 	}
+
+	public int getHelpStatus(int id) {
+		return helpDao.getHelpStatus(id);
+	}
 	
 	
 }
