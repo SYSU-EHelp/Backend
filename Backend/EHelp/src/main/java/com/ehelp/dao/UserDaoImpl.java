@@ -26,6 +26,14 @@ public class UserDaoImpl implements UserDao {
 		return name;
 	}
 	
+	//根据id获取用户
+	public User getUser(int id) {
+		Session session = DBSessionUtil.getSession();
+		User u = (User) session.get(User.class, id);
+		DBSessionUtil.closeSession(session);
+		return u;
+	}
+	
 	//添加验证码
 	public boolean addCode(String phone, String code) {
 		Session session = DBSessionUtil.getSession();
@@ -108,22 +116,44 @@ public class UserDaoImpl implements UserDao {
 		return u.getId();
 	}
 
-	//添加紧急联系人
-	public boolean addContact(Contact contact) {
+	//紧急联系人数量
+	public long getContactNum(int user_id) {
 		Session session = DBSessionUtil.getSession();
+		Query query = session.createQuery("select COUNT(*) from Contact c where c.user_id=:user_id");
+		query.setParameter("user_id", user_id);
+		long num = (long) query.uniqueResult();
+		DBSessionUtil.closeSession(session);
+		return num;
+	}
+	
+	//添加紧急联系人
+	public int addContact(Contact contact) {
+		long contactNum = getContactNum(contact.getUser_id());
+		if (contactNum >= 5) return 1;
+		Session session = DBSessionUtil.getSession();		
 		Query query = session.createQuery(" from Contact c where c.user_id=:user_id and c.contact_user=:contact_user and c.contact_phone=:contact_phone");
-		query.setParameter("user_id", contact.getId());
+		query.setParameter("user_id", contact.getUser_id());
 		query.setParameter("contact_user", contact.getContact_user());
 		query.setParameter("contact_phone", contact.getContact_phone());
-		
 		Contact c = (Contact) query.uniqueResult();
-	
-		if (c != null) return false;
+		if (c != null) return 2;
 		session.save(contact);
 		DBSessionUtil.closeSession(session);
+		return 0;
+	}
+	
+	//删除紧急联系人
+	public boolean deleteContact(int user_id, String username) {
+		Session session = DBSessionUtil.getSession();
+        Query query = session.createQuery(" from Contact c where c.user_id=:user_id and c.contact_user=:contact_user");
+        query.setParameter("user_id", user_id);
+        query.setParameter("contact_user", username);
+        Contact c = (Contact) query.uniqueResult();
+        session.delete(c);
+        DBSessionUtil.closeSession(session);
 		return true;
 	}
-
+	
 	//获取紧急联系人
 	public List<Contact> getContacts(int id) {
 		List<Contact> contacts = new ArrayList<Contact>();
@@ -267,10 +297,13 @@ public class UserDaoImpl implements UserDao {
 
 	public static void main(String[] args) {
 		UserDaoImpl dao = new UserDaoImpl();
-		List<Object[]> results = dao.getLaunch(3);
-		for (Object[] c : results) {
-			System.out.println("事件类型：" + c[0] + ", 事件标题：" + c[1] + "时间：" + c[3]);
-		}
+		System.out.println(dao.deleteContact(6, "ldn"));
+		
+		
+//		List<Object[]> results = dao.getLaunch(3);
+//		for (Object[] c : results) {
+//			System.out.println("事件类型：" + c[0] + ", 事件标题：" + c[1] + "时间：" + c[3]);
+//		}
 		
 //		List<Object[]> results = dao.getResponse(3);
 //		for (Object[] c : results) {

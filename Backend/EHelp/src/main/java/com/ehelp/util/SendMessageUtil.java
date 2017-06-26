@@ -1,5 +1,6 @@
 package com.ehelp.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,10 +72,11 @@ public class SendMessageUtil {
 	}
 	
 	public static void main(String[] args) throws ApiException {
-//		Map<String, String> map = new HashMap<String, String>();
-//		map.put("国丹", "18819253762");
-//		map.put("SB子凌", "18819253697");
-//		send2(map);
+		List<String> phoneList = new ArrayList<String>();
+		phoneList.add("18819253762");
+		phoneList.add("18819253697");
+		phoneList.add("15521379338");
+		send2("SB子毅", phoneList);
 	}
 	
 }

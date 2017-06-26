@@ -281,7 +281,6 @@ public class UserController {
 			map.put("data", data);
 			return map;
 		}
-		
 		try {
 			int id = (Integer) session.getAttribute("user");
 			List<Contact> contacts = userService.getContacts(id);
@@ -323,7 +322,16 @@ public class UserController {
 			username = EncodingUtil.encodeStr(username);
 			int id = (Integer) session.getAttribute("user");
 			Contact contact = new Contact(id, username, phone);
-			if (userService.addContact(contact)) map.put("status", 200);
+			int status = userService.addContact(contact);
+			if (status == 0) map.put("status", 200);
+			else if (status == 1) {
+				map.put("status", 500);
+				map.put("errmsg", "联系人数量太多了，请先删除部分联系人");
+			}
+			else if (status == 2) {
+				map.put("status", 500);
+				map.put("errmsg", "联系人已存在");
+			}
 			else {
 				map.put("status", 500);
 				map.put("errmsg", "添加失败");
@@ -337,6 +345,35 @@ public class UserController {
 		}
 		return map;
 	}
+	
+	/*
+	 * 删除紧急联系人
+	 */
+	@RequestMapping(value="/contacts", method=RequestMethod.PATCH)
+	@ResponseBody
+	public Map<String, Object> deleteContact(@RequestParam(value="username")String username, HttpSession session) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<String, Object>();
+		if (session.getAttribute("user") == null) {
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请先登录");
+			return map;
+		}
+		try {
+			username = EncodingUtil.encodeStr(username);
+			int id = (Integer) session.getAttribute("user");
+			if (userService.deleteContact(id, username)) map.put("status", 200);
+			map.put("data", data);
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请求失败，请重试");
+		}
+		return map;
+	}
+	
 	
 	/*
 	 * 我的模块
@@ -365,6 +402,7 @@ public class UserController {
 					m.put("title", o[2]);
 					m.put("date", sdf.format(o[3]));
 					m.put("num", o[4]);
+					m.put("finished", 2);
 					launch.add(m);
 				}
 				//求助
@@ -384,6 +422,9 @@ public class UserController {
 					m.put("type", o[0]);
 					m.put("id", o[1]);
 					m.put("date", sdf.format(o[3]));
+					m.put("title", "");
+					m.put("finished", 2);
+					m.put("num", 0);
 					launch.add(m);
 				}
 			}
@@ -400,6 +441,7 @@ public class UserController {
 					m.put("title", o[2]);
 					m.put("launcher_username", o[3]);
 					m.put("num", o[4]);
+					m.put("finished", 2);
 					response.add(m);
 				}
 				else if ((Integer)o[0] == 1) {
@@ -409,6 +451,7 @@ public class UserController {
 					m.put("title", o[2]);
 					m.put("launcher_username", o[3]);
 					m.put("finished", o[4]);
+					m.put("num", 0);
 					response.add(m);
 				}
 			}
@@ -426,6 +469,42 @@ public class UserController {
 		}
 		return map;
 	}
+	
+	/*
+	 * 我的信息
+	 */
+	@RequestMapping(value="/{id}/information", method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> getInformation(@PathVariable("id") int id, HttpSession session) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<String, Object>();
+		if (session.getAttribute("user") == null) {
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请先登录");
+			return map;
+		}
+		try {
+			User u = userService.getUser(id);
+			if (u == null) {
+				map.put("status", 500);
+				map.put("data", data);
+				map.put("ermsg", "用户不存在");
+				return map;
+			}
+			data.put("username", u.getUsername());
+			data.put("phone", u.getPhone());
+			map.put("data", data);
+			map.put("status", 200);
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请求失败，请重试");
+		}
+		return map;
+	}
+	
 }
 
 

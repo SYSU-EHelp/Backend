@@ -19,6 +19,11 @@ public class UserServiceImpl implements UserService {
 		return userDao.getName(id);
 	}
 	
+	//根据id获取用户
+	public User getUser(int id) {
+		return userDao.getUser(id);
+	}
+	
 	//添加验证码
 	public boolean addCode(String phone, String code) {
 		return userDao.addCode(phone, code);
@@ -46,8 +51,13 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	//添加紧急联系人
-	public boolean addContact(Contact contact) {
+	public int addContact(Contact contact) {
 		return userDao.addContact(contact);
+	}
+	
+	//删除紧急联系人
+	public boolean deleteContact(int user_id, String username) {
+		return userDao.deleteContact(user_id, username);
 	}
 		
 	//获取紧急联系人

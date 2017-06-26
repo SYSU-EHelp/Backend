@@ -10,6 +10,9 @@ public interface UserService {
 	//根据id获取名字
 	public String getName(int id);
 	
+	//根据id获取用户
+	public User getUser(int id);
+	
 	//添加验证码
 	public boolean addCode(String phone, String code);
 	
@@ -23,7 +26,10 @@ public interface UserService {
 	public int checkUser(User user);
 	
 	//添加紧急联系人
-	public boolean addContact(Contact contact);
+	public int addContact(Contact contact);
+
+	//删除紧急联系人
+	public boolean deleteContact(int user_id, String username);
 	
 	//获取紧急联系人
 	public List<Contact> getContacts(int id);
