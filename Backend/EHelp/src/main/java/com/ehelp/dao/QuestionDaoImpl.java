@@ -1,6 +1,9 @@
 package com.ehelp.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -15,6 +18,14 @@ import com.ehelp.util.DBSessionUtil;
 
 @Repository
 public class QuestionDaoImpl implements QuestionDao {
+	
+	//根据id获取问题
+	public Question getQues(int id) {
+		Session session = DBSessionUtil.getSession();
+		Question q = (Question) session.get(Question.class, id);
+		DBSessionUtil.closeSession(session);
+		return q;
+	}
 
 	// 获取问题列表
 	public List<QuestionResult> getAllQuestions() {
@@ -23,8 +34,22 @@ public class QuestionDaoImpl implements QuestionDao {
 		// 查询语句
 		Query query = session.createQuery("select new com.ehelp.entity.QuestionResult(q.id, q.title, q.description, q.date, u.username, u.avatar) "
 				+ "from Question q, User u where q.asker_id=u.id");
+		query.setMaxResults(20);
 		// 查询结果
 		results = query.list();
+		
+		//排序
+		Collections.sort(results, new Comparator<QuestionResult>() {
+
+			public int compare(QuestionResult q1, QuestionResult q2) {
+				Date d1 = q1.getAsk_date();
+				Date d2 = q2.getAsk_date();
+				if (d1.after(d2)) return -1;
+				else return 1;
+			}
+			
+		});		
+		
 		// 事务提交并关闭
 		DBSessionUtil.closeSession(session);
 		return results;
@@ -63,12 +88,13 @@ public class QuestionDaoImpl implements QuestionDao {
 
 	public static void main(String[] args) {
 		QuestionDaoImpl questionDaoImpl = new QuestionDaoImpl();
-		List<QuestionResult> results = new ArrayList<QuestionResult>();
+//		List<QuestionResult> results = new ArrayList<QuestionResult>();
 //		results = questionDaoImpl.getAllQuestions();
-		results = questionDaoImpl.getQuestion(1);
-		for (QuestionResult q : results) {
-			System.out.println(q.toString());
-		}
+////		results = questionDaoImpl.getQuestion(1);
+//		for (QuestionResult q : results) {
+//			System.out.println(q.toString());
+//		}
+		System.out.println(questionDaoImpl.getQues(25));
 	}
 	
 }

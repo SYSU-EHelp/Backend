@@ -72,11 +72,12 @@ public class SendMessageUtil {
 	}
 	
 	public static void main(String[] args) throws ApiException {
-		List<String> phoneList = new ArrayList<String>();
-		phoneList.add("18819253762");
-		phoneList.add("18819253697");
-		phoneList.add("15521379338");
-		send2("SB子毅", phoneList);
+//		req.setSmsParamString("{\"name\":\"" + name + "\"," + "\"address\":\"" + address+ "\"}");
+//		List<String> phoneList = new ArrayList<String>();
+//		phoneList.add("18819253762");
+//		phoneList.add("18819253697");
+//		phoneList.add("15521379338");
+//		send2("SB子毅", phoneList);
 	}
 	
 }

@@ -81,7 +81,6 @@ public class UserController {
 				return map;
 	        }
 	        if (userService.addCode(phone, code)) {
-	        	System.out.println("验证码添加成功");
 	        	map.put("status", 200);
 	        	data.put("code", code);
 	        	map.put("data", data);
@@ -332,6 +331,10 @@ public class UserController {
 				map.put("status", 500);
 				map.put("errmsg", "联系人已存在");
 			}
+			else if (status == 3) {
+				map.put("status", 500);
+				map.put("errmsg", "不能添加自己");
+			}
 			else {
 				map.put("status", 500);
 				map.put("errmsg", "添加失败");
@@ -494,6 +497,8 @@ public class UserController {
 			}
 			data.put("username", u.getUsername());
 			data.put("phone", u.getPhone());
+			data.put("name", u.getName());
+			data.put("sex", u.getSex());
 			map.put("data", data);
 			map.put("status", 200);
 		} catch (Exception e) {
@@ -505,6 +510,32 @@ public class UserController {
 		return map;
 	}
 	
+	/*
+	 * 修改个人信息
+	 */
+	@RequestMapping(value="/{id}/information", method=RequestMethod.PATCH)
+	@ResponseBody
+	public Map<String, Object> setInformation(@PathVariable("id") int id, @RequestParam(value="name")String name,
+			@RequestParam(value="sex")int sex, HttpSession session) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<String, Object>();
+		if (session.getAttribute("user") == null) {
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请先登录");
+			return map;
+		}
+		try {
+			if (userService.setUser(id, name, sex)) map.put("status", 200);
+			map.put("data", data);
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请求失败，请重试");
+		}
+		return map;
+	}
 }
 
 

@@ -18,7 +18,9 @@ public class User {
 	private String username; // 用户名
 	private String password; // 密码
 	private String phone; // 手机号
-	private String avatar; // 头像
+	private String name; // 名字
+	private int sex; //性别
+	private String avatar; //头像
 	private String code; // 验证码
 
 	public User() {
@@ -29,12 +31,14 @@ public class User {
 		this.password = password;
 	}
 
-	public User(String username, String password, String phone, String avatar, String code) {
+	public User(String username, String password, String phone, String name, int sex, String code, String avatar) {
 		this.username = username;
 		this.password = password;
 		this.phone = phone;
-		this.avatar = avatar;
+		this.name = name;
+		this.sex = sex;
 		this.code = code;
+		this.avatar = avatar;
 	}
 
 	@Id
@@ -74,7 +78,25 @@ public class User {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
+	
+	@Column(name = "name", nullable = false, length = 45)
+	public String getName() {
+		return name;
+	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Column(name = "sex", nullable = false, length = 45)
+	public int getSex() {
+		return sex;
+	}
+
+	public void setSex(int sex) {
+		this.sex = sex;
+	}
+	
 	@Column(name = "avatar", nullable = false, length = 45)
 	public String getAvatar() {
 		return avatar;
@@ -95,8 +117,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", phone=" + phone + ", avatar="
-				+ avatar + ", code=" + code + "]";
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", phone=" + phone + ", name="
+				+ name + ", sex=" + sex + ", code=" + code + "]";
 	}
 
 }

@@ -34,6 +34,17 @@ public class UserDaoImpl implements UserDao {
 		return u;
 	}
 	
+	//修改用户信息
+	public boolean setUser(int id, String name, int sex) {
+		Session session = DBSessionUtil.getSession();
+		User u = (User) session.get(User.class, id);
+		u.setName(name);
+		u.setSex(sex);
+		session.update(u);
+		DBSessionUtil.closeSession(session);
+		return true;
+	}
+	
 	//添加验证码
 	public boolean addCode(String phone, String code) {
 		Session session = DBSessionUtil.getSession();
@@ -45,7 +56,7 @@ public class UserDaoImpl implements UserDao {
 			session.update(u);
 		}
 		else {
-			u = new User("", "", phone, "", code);
+			u = new User("", "", phone, "", 0, code, "");
 			session.save(u);
 		}
 		DBSessionUtil.closeSession(session);
@@ -87,7 +98,6 @@ public class UserDaoImpl implements UserDao {
 			System.out.println(u.toString());
 			u.setUsername(username);
 			u.setPassword(password);
-			u.setAvatar(avatar);
 			session.update(u);
 			DBSessionUtil.closeSession(session);
 			return 1; //成功
@@ -137,6 +147,8 @@ public class UserDaoImpl implements UserDao {
 		query.setParameter("contact_phone", contact.getContact_phone());
 		Contact c = (Contact) query.uniqueResult();
 		if (c != null) return 2;
+		User u = (User) session.get(User.class, contact.getUser_id());
+		if (u != null && u.getPhone().equals(contact.getContact_phone())) return 3;
 		session.save(contact);
 		DBSessionUtil.closeSession(session);
 		return 0;
@@ -215,7 +227,7 @@ public class UserDaoImpl implements UserDao {
 		//求救
 		List<Object[]> que2 = new ArrayList<Object[]>();
 		query = session.createQuery("select e.finished, e.id, e.launcher_id, e.date "
-				+ "from Emergency e, User u where e.launcher_id=u.id and u.id=:id");
+				+ "from Emergency e, User u where e.launcher_id=u.id and u.id=:id and e.finished=0");
 		query.setParameter("id", id);
 		que2 = query.list();
 		for (Object[] o : que2) {
@@ -297,12 +309,11 @@ public class UserDaoImpl implements UserDao {
 
 	public static void main(String[] args) {
 		UserDaoImpl dao = new UserDaoImpl();
-		System.out.println(dao.deleteContact(6, "ldn"));
+		System.out.println(dao.getUser(23));
 		
-		
-//		List<Object[]> results = dao.getLaunch(3);
+//		List<Object[]> results = dao.getLaunch(10);
 //		for (Object[] c : results) {
-//			System.out.println("事件类型：" + c[0] + ", 事件标题：" + c[1] + "时间：" + c[3]);
+//			System.out.println("事件类型：" + c[0] + ", 事件标题：" + c[1] + ", 时间：" + c[3]);
 //		}
 		
 //		List<Object[]> results = dao.getResponse(3);

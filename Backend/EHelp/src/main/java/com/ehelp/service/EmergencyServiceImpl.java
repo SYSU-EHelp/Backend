@@ -18,6 +18,11 @@ public class EmergencyServiceImpl implements EmergencyService {
 	public boolean launchEmergency(Emergency e) {
 		return emergencyDao.launchEmergency(e);
 	}
+	
+	//结束求救
+	public boolean stopEmergency(int id) {
+		return emergencyDao.stopEmergency(id);
+	}
 
 	public List<String> getPhones(int id) {
 		return emergencyDao.getPhones(id);

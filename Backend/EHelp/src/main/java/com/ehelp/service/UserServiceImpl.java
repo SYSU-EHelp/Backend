@@ -24,6 +24,11 @@ public class UserServiceImpl implements UserService {
 		return userDao.getUser(id);
 	}
 	
+	//修改用户信息
+	public boolean setUser(int id, String name, int sex) {
+		return userDao.setUser(id, name, sex);
+	}
+	
 	//添加验证码
 	public boolean addCode(String phone, String code) {
 		return userDao.addCode(phone, code);

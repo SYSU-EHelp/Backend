@@ -13,6 +13,9 @@ public interface UserService {
 	//根据id获取用户
 	public User getUser(int id);
 	
+	//修改用户信息
+	public boolean setUser(int id, String name, int sex);
+	
 	//添加验证码
 	public boolean addCode(String phone, String code);
 	

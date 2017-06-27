@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehelp.entity.Emergency;
@@ -62,6 +63,33 @@ public class EmergencyController {
 				map.put("status", 500);
 				map.put("errmsg", "求救失败");
 			}
+			map.put("data", data);
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请求失败，请重试");
+			return map;
+		}
+		return map;
+	}
+	
+	/*
+	 * 结束求救
+	 */
+	@RequestMapping(value="", method=RequestMethod.PATCH)
+	@ResponseBody
+	public Map<String, Object> stopEmergency(@RequestParam(value="id")int id, HttpSession session) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<String, Object>();
+		if (session.getAttribute("user") == null) {
+			map.put("status", 500);
+			map.put("data", data);
+			map.put("ermsg", "请先登录");
+			return map;
+		}
+		try {
+			if (emergencyService.stopEmergency(id)) map.put("status", 200);
 			map.put("data", data);
 		} catch (Exception e) {
 			e.printStackTrace();

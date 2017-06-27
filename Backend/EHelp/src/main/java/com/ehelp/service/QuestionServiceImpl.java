@@ -16,6 +16,11 @@ public class QuestionServiceImpl implements QuestionService {
 	@Autowired
 	private QuestionDaoImpl questionDao;
 	
+	//根据id获取问题
+	public Question getQues(int id) {
+		return questionDao.getQues(id);
+	}
+	
 	// 获取问题列表
 	public List<QuestionResult> getAllQuestions() {
 		return questionDao.getAllQuestions();

@@ -7,6 +7,9 @@ import com.ehelp.entity.Question;
 import com.ehelp.entity.QuestionResult;
 
 public interface QuestionService {
+	
+	//根据id获取问题
+	public Question getQues(int id);
 
 	// 获取问题列表
 	public List<QuestionResult> getAllQuestions();

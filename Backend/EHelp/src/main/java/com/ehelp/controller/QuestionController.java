@@ -88,6 +88,12 @@ public class QuestionController {
 		try {
 			map.put("status", "200");
 			List<QuestionResult> results = questionService.getQuestion(id);
+			Question ques = questionService.getQues(id);
+			Map<String, Object> _m = new HashMap<String, Object>();
+			_m.put("title", ques.getTitle());
+			_m.put("description", ques.getDescription());
+			_m.put("date", sdf.format(ques.getDate()));
+			data.add(_m);
 			for (QuestionResult q : results) {
 				Map<String, Object> m = new HashMap<String, Object>();
 				m.put("answerer_username", q.getAnswerer_username());
