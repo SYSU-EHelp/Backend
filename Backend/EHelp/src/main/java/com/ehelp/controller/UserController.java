@@ -27,6 +27,8 @@ import com.ehelp.util.EncodingUtil;
 import com.ehelp.util.SendMessageUtil;
 import com.taobao.api.ApiException;
 
+import antlr.CppCodeGenerator;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -248,12 +250,14 @@ public class UserController {
 		try {
 			if (session.getAttribute("user") != null) session.removeAttribute("user");
 			Cookie[] cookies = request.getCookies();
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("user")) {
-					//删除cookie
-					Cookie cookie1 = new Cookie("user", "");
-					cookie1.setMaxAge(0);
-					response.addCookie(cookie1);
+			if (cookies.length > 0) {
+				for (Cookie cookie : cookies) {
+					if (cookie.getName().equals("user")) {
+						//删除cookie
+						Cookie cookie1 = new Cookie("user", "");
+						cookie1.setMaxAge(0);
+						response.addCookie(cookie1);
+					}
 				}
 			}
 			map.put("status", 200);
