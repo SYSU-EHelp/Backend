@@ -28,31 +28,43 @@ public class QuestionDaoImpl implements QuestionDao {
 	}
 
 	// 获取问题列表
-	public List<QuestionResult> getAllQuestions() {
-		List<QuestionResult> results = new ArrayList<QuestionResult>();
+	public List<Object[]> getAllQuestions() {
+		List<Object[]> results = new ArrayList<Object[]>();
 		Session session = DBSessionUtil.getSession();
 		// 查询语句
-		Query query = session.createQuery("select new com.ehelp.entity.QuestionResult(q.id, q.title, q.description, q.date, u.username, u.avatar) "
-				+ "from Question q, User u where q.asker_id=u.id");
-		query.setMaxResults(20);
+		Query query = session.createQuery("select q.id, q.title, q.description, q.date, u.username, u.avatar, q.asker_id "
+				+ "from Question q, User u where q.asker_id=u.id"); 
 		// 查询结果
 		results = query.list();
 		
+		for (Object[] o : results) {
+			int question_id = (int) o[0];
+			query = session.createQuery("select count(*) from Answer a where a.question_id=:question_id");
+			query.setParameter("question_id", question_id);
+			long num = (long) query.uniqueResult();
+			o[6] = num;
+		}
+		
 		//排序
-		Collections.sort(results, new Comparator<QuestionResult>() {
+		Collections.sort(results, new Comparator<Object[]>() {
 
-			public int compare(QuestionResult q1, QuestionResult q2) {
-				Date d1 = q1.getAsk_date();
-				Date d2 = q2.getAsk_date();
+			public int compare(Object[] o1, Object[] o2) {
+				Date d1 = (Date) o1[3];
+				Date d2 = (Date) o2[3];
 				if (d1.after(d2)) return -1;
 				else return 1;
 			}
 			
-		});		
+		});	
 		
-		// 事务提交并关闭
 		DBSessionUtil.closeSession(session);
-		return results;
+		if (results.size() <= 30) return results;
+		//返回前30个问题
+		List<Object[]> results2 = new ArrayList<Object[]>();
+		for (int i = 0; i < 30; i++) {
+			results2.add(results.get(i));
+		}
+		return results2;
 	}
 
 	// 根据问题id获取问题

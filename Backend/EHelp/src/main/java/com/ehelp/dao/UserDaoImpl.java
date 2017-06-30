@@ -21,7 +21,10 @@ public class UserDaoImpl implements UserDao {
 		Session session = DBSessionUtil.getSession();
 		User u = (User) session.get(User.class, id);
 		String name = "";
-		if (u != null) name = u.getUsername();
+		if (u != null) {
+			if ("".equals(u.getName())) name = u.getUsername();
+			else name = u.getName();
+		}
 		DBSessionUtil.closeSession(session);
 		return name;
 	}
@@ -226,8 +229,8 @@ public class UserDaoImpl implements UserDao {
 		
 		//求救
 		List<Object[]> que2 = new ArrayList<Object[]>();
-		query = session.createQuery("select e.finished, e.id, e.launcher_id, e.date "
-				+ "from Emergency e, User u where e.launcher_id=u.id and u.id=:id and e.finished=0");
+		query = session.createQuery("select e.launcher_id, e.id, e.finished, e.date "
+				+ "from Emergency e, User u where e.launcher_id=u.id and u.id=:id");
 		query.setParameter("id", id);
 		que2 = query.list();
 		for (Object[] o : que2) {

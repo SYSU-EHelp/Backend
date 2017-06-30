@@ -26,7 +26,7 @@ import com.taobao.api.ApiException;
 @RequestMapping("/emergencies")
 public class EmergencyController {
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@Autowired
 	private EmergencyServiceImpl emergencyService;
@@ -52,8 +52,10 @@ public class EmergencyController {
 			int id = (Integer) session.getAttribute("user");
 			Date date = sdf.parse(sdf.format(new Date()));
 			Emergency e = new Emergency(id, date, 0);
-			if (emergencyService.launchEmergency(e)) {
+			int event_id = emergencyService.launchEmergency(e);
+			if (event_id != -1) {
 				map.put("status", 200);
+				data.put("id", event_id);
 				//发送紧急短信
 				List<String> list = emergencyService.getPhones(id);
 				String name = userService.getName(id);
@@ -90,6 +92,10 @@ public class EmergencyController {
 		}
 		try {
 			if (emergencyService.stopEmergency(id)) map.put("status", 200);
+			else {
+				map.put("status", 500);
+				map.put("ermsg", "请求失败，请重试");
+			}
 			map.put("data", data);
 		} catch (Exception e) {
 			e.printStackTrace();

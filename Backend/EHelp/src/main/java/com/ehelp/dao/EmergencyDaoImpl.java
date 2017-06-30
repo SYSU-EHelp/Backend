@@ -1,6 +1,9 @@
 package com.ehelp.dao;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,13 +20,20 @@ import com.ehelp.util.DBSessionUtil;
 
 @Repository
 public class EmergencyDaoImpl implements EmergencyDao {
-
-	//发起求救
-	public boolean launchEmergency(Emergency e) {
+	
+	//发起求救并返回id
+	public int launchEmergency(Emergency e) {
 		Session session = DBSessionUtil.getSession();
 		session.save(e);
 		DBSessionUtil.closeSession(session);
-		return true;
+		//返回id
+		session = DBSessionUtil.getSession();
+		Query query = session.createQuery("select e.id from Emergency e where e.launcher_id=:launcher_id and e.date=:date");
+		query.setParameter("launcher_id", e.getLauncher_id());
+		query.setParameter("date", e.getDate());
+		if (query.uniqueResult() == null) return -1;
+		int id = (int) query.uniqueResult();
+		return id;
 	}
 	
 	//结束求救
@@ -50,11 +60,12 @@ public class EmergencyDaoImpl implements EmergencyDao {
 		return list;
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
 		EmergencyDaoImpl emergencyDaoImpl = new EmergencyDaoImpl();
-//		List<String> list = emergencyDaoImpl.getPhones(3);
-//		for (String s : list) System.out.println(s);
-		System.out.println(emergencyDaoImpl.stopEmergency(2));
+		Emergency e = new Emergency(23, sdf.parse(sdf.format(new Date())), 0);
+		System.out.println(emergencyDaoImpl.launchEmergency(e));
 		
 	}
 

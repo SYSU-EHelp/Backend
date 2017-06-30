@@ -15,7 +15,7 @@ public class EmergencyServiceImpl implements EmergencyService {
 	@Autowired
 	private EmergencyDaoImpl emergencyDao;
 
-	public boolean launchEmergency(Emergency e) {
+	public int launchEmergency(Emergency e) {
 		return emergencyDao.launchEmergency(e);
 	}
 	

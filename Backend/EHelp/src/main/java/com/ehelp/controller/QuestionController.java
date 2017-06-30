@@ -50,15 +50,16 @@ public class QuestionController {
 		}
 		try {
 			map.put("status", "200");
-			List<QuestionResult> results = questionService.getAllQuestions();
-			for (QuestionResult q : results) {
+			List<Object[]> results = questionService.getAllQuestions();
+			for (Object[] o : results) {
 				Map<String, Object> m = new HashMap<String, Object>();
-				m.put("id", q.getId());
-				m.put("title", q.getTitle());
-				m.put("description", q.getAsk_description());
-				m.put("date", sdf.format(q.getAsk_date()));
-				m.put("asker_username", q.getAsker_username());
-				m.put("asker_avatar", q.getAsker_avatar());
+				m.put("id", o[0]);
+				m.put("title", o[1]);
+				m.put("description", o[2]);
+				m.put("date", sdf.format(o[3]));
+				m.put("asker_username", o[4]);
+				m.put("asker_avatar", o[5]);
+				m.put("answer_num", o[6]);
 				data.add(m);
 			}
 			map.put("data", data);
@@ -87,13 +88,14 @@ public class QuestionController {
 		}
 		try {
 			map.put("status", "200");
-			List<QuestionResult> results = questionService.getQuestion(id);
 			Question ques = questionService.getQues(id);
 			Map<String, Object> _m = new HashMap<String, Object>();
 			_m.put("title", ques.getTitle());
 			_m.put("description", ques.getDescription());
 			_m.put("date", sdf.format(ques.getDate()));
 			data.add(_m);
+			
+			List<QuestionResult> results = questionService.getQuestion(id);
 			for (QuestionResult q : results) {
 				Map<String, Object> m = new HashMap<String, Object>();
 				m.put("answerer_username", q.getAnswerer_username());

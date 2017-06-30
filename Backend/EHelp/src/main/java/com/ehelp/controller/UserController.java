@@ -114,6 +114,7 @@ public class UserController {
 		}
 		
 		try {
+			username = EncodingUtil.encodeStr(username);
 			int status = userService.addUser(phone, username, password, code);
 			if (status == 0) {
 	        	map.put("status", 500);
@@ -161,7 +162,7 @@ public class UserController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> data = new HashMap<String, Object>();
 		try {
-			System.out.println(username + " " + password);
+			username = EncodingUtil.encodeStr(username);
 			User user = new User(username, password);
 			int id = userService.checkUser(user);
 			if (id != -1) {
@@ -426,7 +427,7 @@ public class UserController {
 					m.put("id", o[1]);
 					m.put("date", sdf.format(o[3]));
 					m.put("title", "");
-					m.put("finished", 2);
+					m.put("finished", o[2]);
 					m.put("num", 0);
 					launch.add(m);
 				}
@@ -526,6 +527,7 @@ public class UserController {
 			return map;
 		}
 		try {
+			name = EncodingUtil.encodeStr(name);
 			if (userService.setUser(id, name, sex)) map.put("status", 200);
 			map.put("data", data);
 		} catch (Exception e) {
@@ -537,8 +539,4 @@ public class UserController {
 		return map;
 	}
 }
-
-
-
-
 

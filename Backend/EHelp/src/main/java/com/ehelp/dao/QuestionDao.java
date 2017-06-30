@@ -12,7 +12,7 @@ public interface QuestionDao {
 	public Question getQues(int id);
 
 	// 获取问题列表
-	public List<QuestionResult> getAllQuestions();
+	public List<Object[]> getAllQuestions();
 	
 	// 根据问题id获取问题
 	public List<QuestionResult> getQuestion(int id);

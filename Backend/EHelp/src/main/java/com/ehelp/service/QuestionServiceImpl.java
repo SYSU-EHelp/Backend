@@ -22,7 +22,7 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 	
 	// 获取问题列表
-	public List<QuestionResult> getAllQuestions() {
+	public List<Object[]> getAllQuestions() {
 		return questionDao.getAllQuestions();
 	}
 
