@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehelp.entity.Emergency;
+import com.ehelp.service.EmergencyService;
 import com.ehelp.service.EmergencyServiceImpl;
 import com.ehelp.service.UserServiceImpl;
 import com.ehelp.util.SendMessageUtil;
@@ -29,7 +30,7 @@ public class EmergencyController {
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@Autowired
-	private EmergencyServiceImpl emergencyService;
+	private EmergencyService emergencyService;
 	
 	@Autowired
 	private UserServiceImpl userService;

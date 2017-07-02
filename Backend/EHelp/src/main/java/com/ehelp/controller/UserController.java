@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.ehelp.entity.Contact;
 import com.ehelp.entity.User;
+import com.ehelp.service.UserService;
 import com.ehelp.service.UserServiceImpl;
 import com.ehelp.util.EncodingUtil;
 import com.ehelp.util.SendMessageUtil;
@@ -36,7 +37,7 @@ public class UserController {
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	
 	@Autowired
-	private UserServiceImpl userService;
+	private UserService userService;
 	
 	/*
 	 * test

@@ -3,6 +3,7 @@ package com.ehelp.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.ehelp.dao.QuestionDaoImpl;
@@ -22,7 +23,9 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 	
 	// 获取问题列表
+	@Cacheable("allQuestions")
 	public List<Object[]> getAllQuestions() {
+		System.out.println("Querying in database...");
 		return questionDao.getAllQuestions();
 	}
 

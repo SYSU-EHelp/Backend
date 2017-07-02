@@ -18,5 +18,7 @@
 		<context:exclude-filter type="annotation"
 			expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
+	
+	<aop:config proxy-target-class="true"/>
    
 </beans>

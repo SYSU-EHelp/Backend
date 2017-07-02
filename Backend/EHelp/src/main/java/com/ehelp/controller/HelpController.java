@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehelp.entity.Help;
 import com.ehelp.entity.Response;
+import com.ehelp.service.HelpService;
 import com.ehelp.service.HelpServiceImpl;
 import com.ehelp.util.EncodingUtil;
 
@@ -30,7 +31,7 @@ public class HelpController {
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	
 	@Autowired
-	private HelpServiceImpl helpService;
+	private HelpService helpService;
 	
 	/*
 	 * 获取求助列表

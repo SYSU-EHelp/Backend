@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.ehelp.entity.Answer;
 import com.ehelp.entity.Question;
 import com.ehelp.entity.QuestionResult;
+import com.ehelp.service.QuestionService;
 import com.ehelp.service.QuestionServiceImpl;
 import com.ehelp.util.EncodingUtil;
 
@@ -32,7 +33,7 @@ public class QuestionController {
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	
 	@Autowired
-	private QuestionServiceImpl questionService;
+	private QuestionService questionService;
 	
 	/*
 	 * 获取问题列表
